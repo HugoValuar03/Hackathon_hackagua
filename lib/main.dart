@@ -1,122 +1,88 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart';
+import 'dart:convert';
+import 'models.dart'; // Arquivo com modelos de dados
+import 'screens/splash_screen.dart';
+import 'screens/onboarding_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/home_screen.dart';
+import 'screens/cadastro_gerador_screen.dart';
+import 'screens/cadastro_coletor_screen.dart';
+import 'screens/solicitar_coleta_screen.dart';
+import 'screens/detalhe_screen.dart';
+import 'screens/dashboard_screen.dart';
+import 'screens/historico_screen.dart';
+import 'screens/recompensas_screen.dart';
+import 'screens/perfil_screen.dart';
+import 'screens/notificacoes_screen.dart';
+import 'screens/admin_mapa_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const BioCycleApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class BioCycleApp extends StatelessWidget {
+  const BioCycleApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'BioCycle',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        primaryColor: const Color(0xFF2d8f6f),
+        scaffoldBackgroundColor: const Color(0xFFf6f8fb),
+        fontFamily: 'Inter',
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const SplashScreen(),
+        '/onboarding': (context) => const OnboardingScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/home': (context) => const HomeScreen(),
+        '/cadastro/gerador': (context) => const CadastroGeradorScreen(),
+        '/cadastro/coletor': (context) => const CadastroColetorScreen(),
+        '/solicitar': (context) => const SolicitarColetaScreen(),
+        '/detalhe/gerador': (context) => const DetalheScreen(isGerador: true),
+        '/detalhe/coletor': (context) => const DetalheScreen(isGerador: false),
+        '/dashboard': (context) => const DashboardScreen(),
+        '/historico': (context) => const HistoricoScreen(),
+        '/recompensas': (context) => const RecompensasScreen(),
+        '/perfil': (context) => const PerfilScreen(),
+        '/notificacoes': (context) => const NotificacoesScreen(),
+        '/admin/mapa': (context) => const AdminMapaScreen(),
+      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+// Estado global (simplificado, use Provider ou Riverpod para produção)
+class AppState {
+  static List<Gerador> geradores = [];
+  static List<Coletor> coletores = [];
+  static List<Coleta> coletas = [];
+  static int pontos = 0;
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  static Future<void> loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final g = prefs.getString('geradores');
+    final c = prefs.getString('coletores');
+    final co = prefs.getString('coletas');
+    if (g != null) geradores = (jsonDecode(g) as List).map((e) => Gerador.fromJson(e)).toList();
+    if (c != null) coletores = (jsonDecode(c) as List).map((e) => Coletor.fromJson(e)).toList();
+    if (co != null) coletas = (jsonDecode(co) as List).map((e) => Coleta.fromJson(e)).toList();
+    pontos = prefs.getInt('pontos') ?? 0;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+  static Future<void> saveData() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('geradores', jsonEncode(geradores.map((e) => e.toJson()).toList()));
+    prefs.setString('coletores', jsonEncode(coletores.map((e) => e.toJson()).toList()));
+    prefs.setString('coletas', jsonEncode(coletas.map((e) => e.toJson()).toList()));
+    prefs.setInt('pontos', pontos);
   }
 }
