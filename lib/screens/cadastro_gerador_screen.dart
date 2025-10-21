@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import '../main.dart';
+import 'package:uuid/uuid.dart';
+
 import '../models.dart';
+
 
 class CadastroGeradorScreen extends StatefulWidget {
   const CadastroGeradorScreen({super.key});
@@ -17,6 +19,7 @@ class _CadastroGeradorScreenState extends State<CadastroGeradorScreen> {
   final _latController = TextEditingController();
   final _lonController = TextEditingController();
   String _tipo = 'restaurante';
+  final List<Gerador> geradores = [];
 
   Future<void> _getLocation() async {
     final position = await Geolocator.getCurrentPosition();
@@ -61,17 +64,19 @@ class _CadastroGeradorScreenState extends State<CadastroGeradorScreen> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    // Cria o objeto Gerador
                     final gerador = Gerador(
-                      nome: _nomeController.text,
+                      id: const Uuid().v4(),
+                      nome: _nomeController.text.trim(),
                       tipo: _tipo,
-                      endereco: _enderecoController.text,
-                      latitude: double.tryParse(_latController.text) ?? 0.0,
-                      longitude: double.tryParse(_lonController.text) ?? 0.0,
+                      endereco: _enderecoController.text.trim(),
+                      latitude: double.parse(_latController.text.replaceAll(',', '.')),
+                      longitude: double.parse(_lonController.text.replaceAll(',', '.')),
                     );
 
-                    // Adiciona na lista global ou envia para backend
-                    geradores.add(gerador);
+                    setState(() {
+                      geradores.add(gerador);
+                    });
+
 
                     // Mostra confirmação
                     ScaffoldMessenger.of(context).showSnackBar(

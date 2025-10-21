@@ -14,6 +14,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   LatLng? _userLocation;
   Map<String, dynamic>? _selectedItem;
+  final List<Map<String, dynamic>> geradores = [];
+  final List<Map<String, dynamic>> coletores = [];
+  String selectedGerador = '';
 
   @override
   void initState() {
@@ -40,18 +43,36 @@ class _HomeScreenState extends State<HomeScreen> {
               TileLayer(urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
               MarkerLayer(
                 markers: [
-                  ...AppState.geradores.map((g) => Marker(
-                    point: LatLng(g.latitude, g.longitude),
-                    builder: (ctx) => const Icon(Icons.location_on, color: Colors.green),
-                    onTap: () => setState(() => _selectedItem = {'type': 'gerador', 'data': g}),
+                  ...geradores.map((g) => Marker(
+                    point: LatLng(
+                      (g['latitude'] as num).toDouble(),
+                      (g['longitude'] as num).toDouble(),
+                    ),
+                    width: 40,
+                    height: 40,
+                    child: GestureDetector(
+                      onTap: () => setState(() => selectedGerador = g['id'] as String),
+                      child: const Icon(Icons.location_on, color: Colors.green),
+                    ),
                   )),
-                  ...AppState.coletores.map((c) => Marker(
-                    point: LatLng(c.latitude, c.longitude),
-                    builder: (ctx) => const Icon(Icons.location_on, color: Colors.blue),
-                    onTap: () => setState(() => _selectedItem = {'type': 'coletor', 'data': c}),
+
+                  ...coletores.map((c) => Marker(
+                    point: LatLng(
+                      (c['latitude'] as num).toDouble(),
+                      (c['longitude'] as num).toDouble(),
+                    ),
+                    width: 40,
+                    height: 40,
+                    child: GestureDetector(
+                      onTap: () {
+                        // ação que quiser ao tocar no coletor
+                      },
+                      child: const Icon(Icons.location_on, color: Colors.blue),
+                    ),
                   )),
                 ],
-              ),
+              )
+
             ],
           ),
           if (_selectedItem != null) _buildBottomSheet(),
