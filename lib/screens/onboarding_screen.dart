@@ -24,15 +24,42 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           _buildPage('Comece Agora', 'Cadastre geradores e solicite coletas facilmente.', Icons.check),
         ],
       ),
-      bottomSheet: _currentPage == 2
-          ? ElevatedButton(
-              onPressed: () async {
-                await Geolocator.requestPermission();
-                Navigator.pushReplacementNamed(context, '/login');
-              },
-              child: const Text('Começar'),
-            )
-          : TextButton(onPressed: () => Navigator.pushReplacementNamed(context, '/login'), child: const Text('Pular')),
+      bottomSheet: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          child: _currentPage == 2
+              ? Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    await Geolocator.requestPermission();
+                    Navigator.pushReplacementNamed(context, '/login');
+                  },
+                  child: const Text('Começar'),
+                ),
+              ),
+              const SizedBox(height: 12), // espaçador
+            ],
+          )
+              : Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: TextButton(
+                  onPressed: () =>
+                      Navigator.pushReplacementNamed(context, '/login'),
+                  child: const Text('Avançar'),
+                ),
+              ),
+              const SizedBox(height: 12), // espaçador
+            ],
+          ),
+        ),
+      ),
+
     );
   }
 
@@ -41,9 +68,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 100, color: Theme.of(context).primaryColor),
+          Icon(icon, size: 100, color: Theme
+              .of(context)
+              .primaryColor),
           const SizedBox(height: 20),
-          Text(title, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          Text(title, style: const TextStyle(
+              fontSize: 24, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
           Text(subtitle, textAlign: TextAlign.center),
         ],
