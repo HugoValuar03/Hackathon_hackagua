@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hackathon_hackagua/screens/marketplace_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
@@ -52,6 +53,7 @@ class BioCycleApp extends StatelessWidget {
         '/beneficios': (context) => const BeneficiosScreen(),
         '/cadastro/gerador': (context) => const CadastroGeradorScreen(),
         '/cadastro/coletor': (context) => const CadastroColetorScreen(),
+        '/marketplace': (context) => const MarketplaceScreen(),
         // '/solicitar': (context) => const SolicitarColetaScreen(),
         // '/detalhe/gerador': (context) => const DetalheScreen(isGerador: true),
         // '/detalhe/coletor': (context) => const DetalheScreen(isGerador: false),

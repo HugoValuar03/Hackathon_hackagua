@@ -124,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               TextButton(
                                 onPressed: () => Navigator.pushReplacementNamed(
                                   context,
-                                  '/home',
+                                  '/marketplace',
                                 ),
                                 child: Text(
                                   'Modo convidado',

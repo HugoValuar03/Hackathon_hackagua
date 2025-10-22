@@ -7,7 +7,8 @@ class CadastroScreen extends StatefulWidget {
   State<CadastroScreen> createState() => _CadastroScreenState();
 }
 
-class _CadastroScreenState extends State<CadastroScreen> with TickerProviderStateMixin {
+class _CadastroScreenState extends State<CadastroScreen>
+    with TickerProviderStateMixin {
   bool _showProdutor = false;
   bool _showColetor = false;
 
@@ -45,10 +46,12 @@ class _CadastroScreenState extends State<CadastroScreen> with TickerProviderStat
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 1100),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 24,
+                ),
                 child: Column(
                   children: [
-                    // LOGO
                     Image.asset('lib/assets/app_logo.png', width: 180),
                     const SizedBox(height: 18),
 
@@ -58,45 +61,59 @@ class _CadastroScreenState extends State<CadastroScreen> with TickerProviderStat
 
                         final produtorCard = _PerfilCard(
                           titulo: 'Produtor',
-                          botaoLabel: _showProdutor ? 'Fechar' : 'Cadastrar Produtor',
-                          onBotao: () => setState(() => _showProdutor = !_showProdutor),
+                          botaoLabel: _showProdutor
+                              ? 'Fechar'
+                              : 'Cadastrar Produtor',
+                          onBotao: () =>
+                              setState(() => _showProdutor = !_showProdutor),
                           child: _ProdutorForm(
                             show: _showProdutor,
                             nomeCtrl: _nomeProdutor,
                             emailCtrl: _emailProdutor,
 
-                            // ▼ novos
                             tipos: _tiposGerador,
                             selectedTipo: _tipoGerador,
-                            onChangedTipo: (v) => setState(() => _tipoGerador = v),
+                            onChangedTipo: (v) =>
+                                setState(() => _tipoGerador = v),
 
                             onSubmit: () {
                               if (_tipoGerador == null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Selecione o tipo do produtor')),
+                                  const SnackBar(
+                                    content: Text(
+                                      'Selecione o tipo do produtor',
+                                    ),
+                                  ),
                                 );
                                 return;
                               }
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Produtor cadastrado ($_tipoGerador)!')),
+                                SnackBar(
+                                  content: Text(
+                                    'Produtor cadastrado ($_tipoGerador)!',
+                                  ),
+                                ),
                               );
                             },
                           ),
                         );
 
-
                         final coletorCard = _PerfilCard(
                           titulo: 'Coletor',
-                          botaoLabel: _showColetor ? 'Fechar' : 'Cadastrar Coletor',
-                          onBotao: () => setState(() => _showColetor = !_showColetor),
+                          botaoLabel: _showColetor
+                              ? 'Fechar'
+                              : 'Cadastrar Coletor',
+                          onBotao: () =>
+                              setState(() => _showColetor = !_showColetor),
                           child: _ColetorForm(
                             show: _showColetor,
                             nomeCtrl: _nomeColetor,
                             areaCtrl: _areaColetor,
                             onSubmit: () {
-                              // TODO: salvar coletor
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Coletor cadastrado!')),
+                                const SnackBar(
+                                  content: Text('Coletor cadastrado!'),
+                                ),
                               );
                             },
                           ),
@@ -126,15 +143,22 @@ class _CadastroScreenState extends State<CadastroScreen> with TickerProviderStat
                         );
                       },
                     ),
-
-                    const SizedBox(height: 16),
-                    Container(
-                      width: 160,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        color: color.primary.withOpacity(.12),
-                        borderRadius: BorderRadius.circular(999),
-                      ),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Já tem conta?',
+                          style: const TextStyle(color: Color(0xFF000000)),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pushReplacementNamed(
+                            context,
+                            '/login',
+                          ),
+                          child: const Text('Logar'),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -175,7 +199,9 @@ class _PerfilCard extends StatelessWidget {
           children: [
             Text(
               titulo,
-              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
             ),
             const SizedBox(height: 12),
             FilledButton(
@@ -327,7 +353,7 @@ class _ColetorForm extends StatelessWidget {
             onPressed: onSubmit,
             style: FilledButton.styleFrom(
               minimumSize: const Size.fromHeight(44),
-              backgroundColor: Color(0xFF6CB40C)
+              backgroundColor: Color(0xFF6CB40C),
             ),
             child: const Text('Salvar Coletor'),
           ),
