@@ -6,7 +6,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:convert';
-import 'models.dart'; // Arquivo com modelos de dados
+import 'models.dart';
 import 'screens/splash_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/login_screen.dart';
@@ -45,7 +45,7 @@ class BioCycleApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/home': (context) => const HomeScreen(),
         '/cadastro/gerador': (context) => const CadastroGeradorScreen(),
-        // '/cadastro/coletor': (context) => const CadastroColetorScreen(),
+        '/cadastro/coletor': (context) => const CadastroColetorScreen(),
         // '/solicitar': (context) => const SolicitarColetaScreen(),
         // '/detalhe/gerador': (context) => const DetalheScreen(isGerador: true),
         // '/detalhe/coletor': (context) => const DetalheScreen(isGerador: false),
