@@ -4,7 +4,6 @@ import 'package:uuid/uuid.dart';
 
 import '../models.dart';
 
-
 class CadastroGeradorScreen extends StatefulWidget {
   const CadastroGeradorScreen({super.key});
 
@@ -37,23 +36,46 @@ class _CadastroGeradorScreenState extends State<CadastroGeradorScreen> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              TextFormField(controller: _nomeController, decoration: const InputDecoration(labelText: 'Nome'), validator: (v) => v!.isEmpty ? 'Obrigatório' : null),
+              TextFormField(
+                controller: _nomeController,
+                decoration: const InputDecoration(labelText: 'Nome'),
+                validator: (v) => v!.isEmpty ? 'Obrigatório' : null,
+              ),
               DropdownButtonFormField<String>(
                 value: _tipo,
                 items: const [
-                  DropdownMenuItem(value: 'restaurante', child: Text('Restaurante')),
+                  DropdownMenuItem(
+                    value: 'restaurante',
+                    child: Text('Restaurante'),
+                  ),
                   DropdownMenuItem(value: 'feira', child: Text('Feira')),
                   DropdownMenuItem(value: 'escola', child: Text('Escola')),
-                  DropdownMenuItem(value: 'condominio', child: Text('Condomínio')),
+                  DropdownMenuItem(
+                    value: 'condominio',
+                    child: Text('Condomínio'),
+                  ),
                 ],
                 onChanged: (v) => setState(() => _tipo = v!),
               ),
-              TextFormField(controller: _enderecoController, decoration: const InputDecoration(labelText: 'Endereço')),
+              TextFormField(
+                controller: _enderecoController,
+                decoration: const InputDecoration(labelText: 'Endereço'),
+              ),
               Row(
                 children: [
-                  Expanded(child: TextFormField(controller: _latController, decoration: const InputDecoration(labelText: 'Latitude'))),
-                  const SizedBox(width:                   16),
-                  Expanded(child: TextFormField(controller: _lonController, decoration: const InputDecoration(labelText: 'Longitude'))),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _latController,
+                      decoration: const InputDecoration(labelText: 'Latitude'),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _lonController,
+                      decoration: const InputDecoration(labelText: 'Longitude'),
+                    ),
+                  ),
                   IconButton(
                     icon: const Icon(Icons.my_location),
                     onPressed: _getLocation,
@@ -69,18 +91,23 @@ class _CadastroGeradorScreenState extends State<CadastroGeradorScreen> {
                       nome: _nomeController.text.trim(),
                       tipo: _tipo,
                       endereco: _enderecoController.text.trim(),
-                      latitude: double.parse(_latController.text.replaceAll(',', '.')),
-                      longitude: double.parse(_lonController.text.replaceAll(',', '.')),
+                      latitude: double.parse(
+                        _latController.text.replaceAll(',', '.'),
+                      ),
+                      longitude: double.parse(
+                        _lonController.text.replaceAll(',', '.'),
+                      ),
                     );
 
                     setState(() {
                       geradores.add(gerador);
                     });
 
-
                     // Mostra confirmação
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Gerador cadastrado com sucesso!')),
+                      const SnackBar(
+                        content: Text('Gerador cadastrado com sucesso!'),
+                      ),
                     );
 
                     // Volta para a tela anterior
