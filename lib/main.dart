@@ -1,30 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hackathon_hackagua/screens/marketplace_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:lottie/lottie.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:geolocator/geolocator.dart';
-import 'dart:convert';
+
+import 'database/db_helper.dart';
 import 'models.dart';
-import 'screens/splash_screen.dart';
-import 'screens/onboarding_screen.dart';
-import 'screens/login_screen.dart';
-import 'screens/home_screen.dart';
-import 'screens/cadastro_gerador_screen.dart';
-import 'screens/cadastro_coletor_screen.dart';
-import 'screens/solicitar_coleta_screen.dart';
-import 'screens/detalhe_screen.dart';
-import 'screens/dashboard_screen.dart';
-import 'screens/historico_screen.dart';
-import 'screens/recompensas_screen.dart';
-import 'screens/perfil_screen.dart';
-import 'screens/notificacoes_screen.dart';
-import 'screens/admin_mapa_screen.dart';
 import 'screens/beneficios_screen.dart';
 import 'screens/cadastro_screen.dart';
-import 'database/db_helper.dart';
+import 'screens/login_screen.dart';
+import 'screens/onboarding_screen.dart';
+import 'screens/splash_screen.dart';
 
 
 void main() {
@@ -49,20 +35,8 @@ class BioCycleApp extends StatelessWidget {
         '/onboarding': (context) => const OnboardingScreen(),
         '/login': (context) => const LoginScreen(),
         '/cadastro': (context) => const CadastroScreen(),
-        // '/home': (context) => const HomeScreen(),
         '/beneficios': (context) => const BeneficiosScreen(),
-        '/cadastro/gerador': (context) => const CadastroGeradorScreen(),
-        '/cadastro/coletor': (context) => const CadastroColetorScreen(),
         '/marketplace': (context) => const MarketplaceScreen(),
-        // '/solicitar': (context) => const SolicitarColetaScreen(),
-        // '/detalhe/gerador': (context) => const DetalheScreen(isGerador: true),
-        // '/detalhe/coletor': (context) => const DetalheScreen(isGerador: false),
-        // '/dashboard': (context) => const DashboardScreen(),
-        // '/historico': (context) => const HistoricoScreen(),
-        // '/recompensas': (context) => const RecompensasScreen(),
-        // '/perfil': (context) => const PerfilScreen(),
-        // '/notificacoes': (context) => const NotificacoesScreen(),
-        // '/admin/mapa': (context) => const AdminMapaScreen(),
       },
     );
   }
@@ -90,7 +64,6 @@ class AppState {
     // Carrega produtos do SQLite
     produtos = await DBHelper.getProdutos();
 
-    // Caso o banco esteja vazio, popula com dados iniciais
     if (produtos.isEmpty) {
       produtos = [
         Produto(

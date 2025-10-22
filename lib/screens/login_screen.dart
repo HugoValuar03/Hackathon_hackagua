@@ -186,14 +186,6 @@ class _BottomAccent extends StatelessWidget {
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).padding.bottom + 16,
           ),
-          child: Container(
-            width: 160,
-            height: 6,
-            decoration: BoxDecoration(
-              color: color.primary.withOpacity(.12),
-              borderRadius: BorderRadius.circular(999),
-            ),
-          ),
         ),
       ),
     );

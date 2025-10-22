@@ -120,7 +120,6 @@ class _CadastroScreenState extends State<CadastroScreen>
                         );
 
                         if (!isWide) {
-                          // MOBILE: empilha
                           return Column(
                             children: [
                               produtorCard,
@@ -130,7 +129,6 @@ class _CadastroScreenState extends State<CadastroScreen>
                           );
                         }
 
-                        // DESKTOP/TABLET: lado a lado com divisor
                         return IntrinsicHeight(
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,10 +150,8 @@ class _CadastroScreenState extends State<CadastroScreen>
                           style: const TextStyle(color: Color(0xFF000000)),
                         ),
                         TextButton(
-                          onPressed: () => Navigator.pushReplacementNamed(
-                            context,
-                            '/login',
-                          ),
+                          onPressed: () =>
+                              Navigator.pushReplacementNamed(context, '/login'),
                           child: const Text('Logar'),
                         ),
                       ],

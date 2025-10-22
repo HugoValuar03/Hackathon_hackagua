@@ -16,13 +16,18 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
   Widget build(BuildContext context) {
     final produtosFiltrados = _filtroCategoria == 'todos'
         ? AppState.produtos
-        : AppState.produtos.where((p) => p.categoria == _filtroCategoria).toList();
+        : AppState.produtos
+              .where((p) => p.categoria == _filtroCategoria)
+              .toList();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Marketplace Verde'),
         actions: [
-          Text('Pontos: ${AppState.pontos}', style: const TextStyle(fontSize: 16)),
+          Text(
+            'Pontos: ${AppState.pontos}',
+            style: const TextStyle(fontSize: 16),
+          ),
         ],
       ),
       body: Column(
@@ -32,7 +37,10 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
             child: DropdownButton<String>(
               value: _filtroCategoria,
               items: const [
-                DropdownMenuItem(value: 'todos', child: Text('Todas as Categorias')),
+                DropdownMenuItem(
+                  value: 'todos',
+                  child: Text('Todas as Categorias'),
+                ),
                 DropdownMenuItem(value: 'composto', child: Text('Composto')),
                 DropdownMenuItem(value: 'sementes', child: Text('Sementes')),
                 DropdownMenuItem(value: 'credito', child: Text('Créditos')),
@@ -48,9 +56,16 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
                 return Card(
                   margin: const EdgeInsets.all(8.0),
                   child: ListTile(
-                    leading: Image.asset(produto.imagemUrl, width: 50, height: 50, fit: BoxFit.cover),
+                    leading: Image.asset(
+                      produto.imagemUrl,
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    ),
                     title: Text(produto.nome),
-                    subtitle: Text('${produto.descricao}\nPreço: ${produto.precoPontos} pontos'),
+                    subtitle: Text(
+                      '${produto.descricao}\nPreço: ${produto.precoPontos} pontos',
+                    ),
                     trailing: ElevatedButton(
                       onPressed: () => _comprarProduto(produto),
                       child: const Text('Comprar'),
@@ -73,9 +88,9 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
         SnackBar(content: Text('Compra realizada: ${produto.nome}!')),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Pontos insuficientes!')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Pontos insuficientes!')));
     }
   }
 }
