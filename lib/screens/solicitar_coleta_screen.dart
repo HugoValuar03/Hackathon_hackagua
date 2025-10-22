@@ -32,7 +32,6 @@ class _SolicitarColetaScreenState extends State<SolicitarColetaScreen> {
     super.dispose();
   }
 
-  // -------- Helpers --------
   double? _parseDouble(String s) {
     if (s.trim().isEmpty) return null;
     return double.tryParse(s.replaceAll(',', '.'));
@@ -44,11 +43,13 @@ class _SolicitarColetaScreenState extends State<SolicitarColetaScreen> {
     const R = 6371.0; // km
     final dLat = _toRad(lat2 - lat1);
     final dLon = _toRad(lon2 - lon1);
-    final a = math.pow(math.sin(dLat / 2), 2) +
+    final a =
+        math.pow(math.sin(dLat / 2), 2) +
         math.cos(_toRad(lat1)) *
             math.cos(_toRad(lat2)) *
             math.pow(math.sin(dLon / 2), 2);
-    final c = 2 * math.atan2(math.sqrt(a as double), math.sqrt(1 - (a as double)));
+    final c =
+        2 * math.atan2(math.sqrt(a as double), math.sqrt(1 - (a as double)));
     return R * c;
   }
 
@@ -96,9 +97,9 @@ class _SolicitarColetaScreenState extends State<SolicitarColetaScreen> {
 
   void _simularMatch() {
     if (_geradorId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Escolha um gerador')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Escolha um gerador')));
       return;
     }
     final g = widget.geradores.firstWhere((e) => e['id'] == _geradorId);
@@ -127,7 +128,8 @@ class _SolicitarColetaScreenState extends State<SolicitarColetaScreen> {
 
     final kg = _parseDouble(_kgCtrl.text)!;
     final g = widget.geradores.firstWhere((e) => e['id'] == _geradorId);
-    final coletor = _matchPreview ??
+    final coletor =
+        _matchPreview ??
         _findNearestColetor(
           (g['latitude'] as num).toDouble(),
           (g['longitude'] as num).toDouble(),
@@ -144,10 +146,12 @@ class _SolicitarColetaScreenState extends State<SolicitarColetaScreen> {
 
     final request = <String, dynamic>{
       'id': _uuid.v4(),
-      'site_id': g['id'], // aqui usamos o id do gerador como "site_id" simplificado
+      'site_id': g['id'],
+      // aqui usamos o id do gerador como "site_id" simplificado
       'gerador_id': g['id'],
       'coletor_id': coletor['id'],
-      'status': 'aberto', // ou 'concluida' se quiser já criar como feita
+      'status': 'aberto',
+      // ou 'concluida' se quiser já criar como feita
       'est_kg': kg,
       'preferred_date': (_preferredDate ?? DateTime.now()).toIso8601String(),
       'impacto_previsto': impacto,
@@ -169,10 +173,12 @@ class _SolicitarColetaScreenState extends State<SolicitarColetaScreen> {
             DropdownButtonFormField<String>(
               value: _geradorId,
               items: widget.geradores
-                  .map<DropdownMenuItem<String>>((g) => DropdownMenuItem(
-                value: g['id'] as String,
-                child: Text('${g['nome']} — ${g['tipo']}'),
-              ))
+                  .map<DropdownMenuItem<String>>(
+                    (g) => DropdownMenuItem(
+                      value: g['id'] as String,
+                      child: Text('${g['nome']} — ${g['tipo']}'),
+                    ),
+                  )
                   .toList(),
               onChanged: (v) => setState(() => _geradorId = v),
               decoration: const InputDecoration(labelText: 'Gerador'),
@@ -181,10 +187,12 @@ class _SolicitarColetaScreenState extends State<SolicitarColetaScreen> {
             const SizedBox(height: 8),
             TextFormField(
               controller: _kgCtrl,
-              keyboardType:
-              const TextInputType.numberWithOptions(decimal: true),
-              decoration:
-              const InputDecoration(labelText: 'Quantidade estimada (kg)'),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              decoration: const InputDecoration(
+                labelText: 'Quantidade estimada (kg)',
+              ),
               validator: (v) {
                 final d = _parseDouble(v ?? '');
                 if (d == null || d <= 0) return 'Informe um valor válido';
@@ -196,14 +204,15 @@ class _SolicitarColetaScreenState extends State<SolicitarColetaScreen> {
               children: [
                 Expanded(
                   child: InputDecorator(
-                    decoration:
-                    const InputDecoration(labelText: 'Data preferida'),
+                    decoration: const InputDecoration(
+                      labelText: 'Data preferida',
+                    ),
                     child: Text(
                       _preferredDate == null
                           ? 'Hoje'
                           : '${_preferredDate!.day.toString().padLeft(2, '0')}/'
-                          '${_preferredDate!.month.toString().padLeft(2, '0')}/'
-                          '${_preferredDate!.year}',
+                                '${_preferredDate!.month.toString().padLeft(2, '0')}/'
+                                '${_preferredDate!.year}',
                     ),
                   ),
                 ),
@@ -228,7 +237,7 @@ class _SolicitarColetaScreenState extends State<SolicitarColetaScreen> {
                   Expanded(
                     child: Text(
                       'Sugerido: ${_matchPreview!['nome']} '
-                          '(${(_matchPreview!['dist_km'] as double).toStringAsFixed(2)} km)',
+                      '(${(_matchPreview!['dist_km'] as double).toStringAsFixed(2)} km)',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.right,

@@ -95,30 +95,37 @@ class Coleta {
 }
 
 class Produto {
-  String id;
-  String nome;
-  String categoria;
-  String descricao;
-  double precoPontos;
-  String imagemUrl; // URL ou asset para imagem
+  final String id;
+  final String nome;
+  final String categoria;
+  final String descricao;
+  final int precoPontos;
+  final String imagemUrl;
 
-  Produto({required this.id, required this.nome, required this.categoria, required this.descricao, required this.precoPontos, required this.imagemUrl});
-
-  factory Produto.fromJson(Map<String, dynamic> json) => Produto(
-    id: json['id'],
-    nome: json['nome'],
-    categoria: json['categoria'],
-    descricao: json['descricao'],
-    precoPontos: json['preco_pontos'],
-    imagemUrl: json['imagem_url'],
-  );
+  Produto({
+    required this.id,
+    required this.nome,
+    required this.categoria,
+    required this.descricao,
+    required this.precoPontos,
+    required this.imagemUrl,
+  });
 
   Map<String, dynamic> toJson() => {
     'id': id,
     'nome': nome,
     'categoria': categoria,
     'descricao': descricao,
-    'preco_pontos': precoPontos,
-    'imagem_url': imagemUrl,
+    'precoPontos': precoPontos,
+    'imagemUrl': imagemUrl,
   };
+
+  factory Produto.fromJson(Map<String, dynamic> json) => Produto(
+    id: json['id'],
+    nome: json['nome'],
+    categoria: json['categoria'],
+    descricao: json['descricao'],
+    precoPontos: json['precoPontos'],
+    imagemUrl: json['imagemUrl'],
+  );
 }
