@@ -97,14 +97,14 @@ class _MapsScreenState extends State<MapsScreen> {
       final partnerMarkers = _parceiros
           .map(
             (p) => Marker(
-          markerId: MarkerId(p.id),
-          position: p.pos,
-          infoWindow: InfoWindow(
-            title: p.nome,
-            snippet: '${p.bairro} • até ${p.pontosPorDoacao} pts',
-          ),
-        ),
-      )
+              markerId: MarkerId(p.id),
+              position: p.pos,
+              infoWindow: InfoWindow(
+                title: p.nome,
+                snippet: '${p.bairro} • até ${p.pontosPorDoacao} pts',
+              ),
+            ),
+          )
           .toSet();
 
       setState(() {
@@ -131,29 +131,30 @@ class _MapsScreenState extends State<MapsScreen> {
   Widget build(BuildContext context) {
     final mapSection = _loading
         ? const SizedBox(
-      height: 280,
-      child: Center(child: CircularProgressIndicator()),
-    )
+            height: 280,
+            child: Center(child: CircularProgressIndicator()),
+          )
         : _isUnsupportedPlatform
         ? const _MapaPlaceholder(height: 280)
         : SizedBox(
-      height: 280, // mapa menor
-      child: GoogleMap(
-        initialCameraPosition: CameraPosition(
-          target: _initialPos,
-          zoom: 14,
-        ),
-        onMapCreated: (c) => _controller = c,
-        myLocationEnabled: true,
-        myLocationButtonEnabled: false,
-        zoomControlsEnabled: false,
-        markers: _markers,
-      ),
-    );
+            height: 280, // mapa menor
+            child: GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: _initialPos,
+                zoom: 14,
+              ),
+              onMapCreated: (c) => _controller = c,
+              myLocationEnabled: true,
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
+              markers: _markers,
+            ),
+          );
 
     return ScaffoldWithNav(
       title: 'Mapa de Parceiros',
-      currentIndex: 1, // índice da aba "Mapa" na bottom nav
+      currentIndex: 1,
+      // índice da aba "Mapa" na bottom nav
       role: widget.role,
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -187,7 +188,7 @@ class _MapsScreenState extends State<MapsScreen> {
 
           // Lista de parceiros
           ..._parceiros.map(
-                (p) => _ParceiroCard(
+            (p) => _ParceiroCard(
               parceiro: p,
               onVerNoMapa: _isUnsupportedPlatform
                   ? null
@@ -205,28 +206,41 @@ class _MapsScreenState extends State<MapsScreen> {
       ),
       floatingActionButton: _isUnsupportedPlatform
           ? null
-          : FloatingActionButton(
-        tooltip: 'Centralizar em mim',
-        onPressed: () => _controller?.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(target: _initialPos, zoom: 15),
-          ),
-        ),
-        child: const Icon(Icons.my_location),
-      ),
+          : Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // Botão "Centralizar em mim" (já existente)
+                FloatingActionButton(
+                  tooltip: 'Centralizar em mim',
+                  onPressed: () => _controller?.animateCamera(
+                    CameraUpdate.newCameraPosition(
+                      CameraPosition(target: _initialPos, zoom: 15),
+                    ),
+                  ),
+                  child: const Icon(Icons.my_location),
+                ),
+                const SizedBox(height: 12),
+                // NOVO: Botão "Adicionar"
+                FloatingActionButton(
+                  tooltip: 'Adicionar',
+                  onPressed: () {}, // sem funcionalidade por enquanto
+                  child: const Icon(Icons.add),
+                ),
+              ],
+            ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
   Future<void> _goTo(LatLng target, {String? title}) async {
     await _controller?.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(target: target, zoom: 16),
-      ),
+      CameraUpdate.newCameraPosition(CameraPosition(target: target, zoom: 16)),
     );
     if (title != null && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Centralizado em: $title')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Centralizado em: $title')));
     }
   }
 }
@@ -235,6 +249,7 @@ class _MapsScreenState extends State<MapsScreen> {
 
 class _MapaPlaceholder extends StatelessWidget {
   const _MapaPlaceholder({this.height = 240});
+
   final double height;
 
   @override
@@ -250,7 +265,7 @@ class _MapaPlaceholder extends StatelessWidget {
       child: Center(
         child: Text(
           'Mapa do Google (não suportado nesta plataforma)\n'
-              'Use Android/iOS para ver o mapa real.',
+          'Use Android/iOS para ver o mapa real.',
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
@@ -311,7 +326,11 @@ class _ParceiroCard extends StatelessWidget {
                 height: 72,
                 color: Colors.grey.shade200,
                 alignment: Alignment.center,
-                child: const Icon(Icons.restaurant, size: 32, color: Colors.grey),
+                child: const Icon(
+                  Icons.restaurant,
+                  size: 32,
+                  color: Colors.grey,
+                ),
               ),
             ),
             const SizedBox(width: 12),
@@ -326,7 +345,9 @@ class _ParceiroCard extends StatelessWidget {
                     parceiro.nome,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: text.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                    style: text.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   // Endereço idem

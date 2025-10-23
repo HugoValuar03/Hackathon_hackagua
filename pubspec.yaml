@@ -40,9 +40,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - lib/assets/app_logo.png
-    - lib/assets/biogas.jpg
-    - lib/assets/images.jpeg
-    - lib/assets/substrato.jpeg
-
+    - assets/app_logo.png
+    - assets/biogas.jpg
+    - assets/images.jpeg
+    - assets/substrato.jpeg
 
