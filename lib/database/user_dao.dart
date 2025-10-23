@@ -38,7 +38,6 @@ class Usuario {
 }
 
 class UsuarioDao {
-  // Inserir novo usuário
   static Future<void> inserirUsuario(Usuario usuario) async {
     final db = await DBHelper.database;
     await db.insert(
@@ -48,8 +47,24 @@ class UsuarioDao {
     );
   }
 
-  // Buscar usuário por e-mail e senha (para login)
-  static Future<Usuario?> buscarPorEmailESenha(String email, String senha) async {
+  static Future<Usuario?> buscarPorEmail(String email) async {
+    final db = await DBHelper.database;
+    final result = await db.query(
+      'usuarios',
+      where: 'email = ?',
+      whereArgs: [email],
+      limit: 1,
+    );
+
+    if (result.isNotEmpty) {
+      return Usuario.fromMap(result.first);
+    }
+    return null;
+  }
+
+
+  static Future<Usuario?> buscarPorEmailESenha(
+      String email, String senha) async {
     final db = await DBHelper.database;
     final result = await db.query(
       'usuarios',
@@ -63,14 +78,10 @@ class UsuarioDao {
     return null;
   }
 
-  // Buscar usuário por e-mail (para verificar duplicado)
-  static Future<Usuario?> buscarPorEmail(String email) async {
+  static Future<Usuario?> buscarPorId(int id) async {
     final db = await DBHelper.database;
-    final result = await db.query(
-      'usuarios',
-      where: 'email = ?',
-      whereArgs: [email],
-    );
+    final result =
+    await db.query('usuarios', where: 'id = ?', whereArgs: [id]);
 
     if (result.isNotEmpty) {
       return Usuario.fromMap(result.first);
