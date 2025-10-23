@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:hackathon_hackagua/maps/maps_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'database/db_helper.dart';
@@ -75,6 +76,8 @@ class BioCycleApp extends StatelessWidget {
         '/produtor/beneficios': (context) => const ProdutorBeneficiosScreen(),
         '/produtor/marketplace': (context) => const ProdutorMarketplaceScreen(),
         '/produtor/perfil': (context) => const ProdutorPerfilScreen(),
+        '/produtor/mapa': (context) => const MapsScreen(),
+
 
         // ==== COLETOR ====
         '/coletor/dashboard': (context) => const ColetorDashboard(),
