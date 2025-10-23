@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../models.dart';
@@ -12,8 +13,21 @@ class DBHelper {
   }
 
   static Future<Database> _initDB() async {
+<<<<<<< HEAD
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'biocycle.db');
+=======
+    String path;
+
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      // Caminho manual para desktop
+      path = join(Directory.current.path, _dbName);
+    } else {
+      // Caminho padrão para Android/iOS
+      final dbPath = await getDatabasesPath();
+      path = join(dbPath, _dbName);
+    }
+>>>>>>> origin/master
 
     // 🔁 Sempre recria o banco ao iniciar o app
     await deleteDatabase(path);

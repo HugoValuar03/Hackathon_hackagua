@@ -1,27 +1,33 @@
+// widgets/scaffold_with_nav.dart
 import 'package:flutter/material.dart';
 import 'produtor_app_bottom_nav.dart';
 import 'coletor_app_bottom_nav.dart';
 
 enum UserRole { produtor, coletor }
 
-/// Wrapper padrão para telas com AppBar + BottomNav.
 class ScaffoldWithNav extends StatelessWidget {
   const ScaffoldWithNav({
     super.key,
     required this.title,
     required this.currentIndex,
     required this.body,
+    required this.role,
     this.actions,
     this.enabledNav = true,
-    required this.role, // <<< escolha de barra
+    this.floatingActionButton,
+    this.floatingActionButtonLocation,
   });
 
   final String title;
-  final int currentIndex; // 0..3
+  final int currentIndex;
   final Widget body;
+  final UserRole role;
   final List<Widget>? actions;
   final bool enabledNav;
-  final UserRole role;
+
+  // NOVO
+  final Widget? floatingActionButton;
+  final FloatingActionButtonLocation? floatingActionButtonLocation;
 
   @override
   Widget build(BuildContext context) {
@@ -37,13 +43,12 @@ class ScaffoldWithNav extends StatelessWidget {
     };
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        centerTitle: true,
-        actions: actions,
-      ),
+      appBar: AppBar(title: Text(title), centerTitle: true, actions: actions),
       body: body,
       bottomNavigationBar: bottomNav,
+      floatingActionButton: floatingActionButton,
+      floatingActionButtonLocation:
+          floatingActionButtonLocation ?? FloatingActionButtonLocation.endFloat,
     );
   }
 }

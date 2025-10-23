@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="bio_cycle"
+    <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyCgccaLEZVD905Ny3BiV-gY7_n2ascl-Mk"/>
+
+    android:label="bio_cycle"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
