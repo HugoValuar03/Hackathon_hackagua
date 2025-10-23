@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../models.dart';
@@ -16,22 +15,13 @@ class DBHelper {
   }
 
   static Future<Database> _initDB() async {
-    String path;
-
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-      // Caminho manual para desktop
-      path = join(Directory.current.path, _dbName);
-    } else {
-      // Caminho padrão para Android/iOS
-      final dbPath = await getDatabasesPath();
-      path = join(dbPath, _dbName);
-    }
+    final dbPath = await getDatabasesPath(); // Funciona para mobile e desktop agora
+    final path = join(dbPath, _dbName);
 
     return await openDatabase(
       path,
       version: _dbVersion,
       onCreate: (db, version) async {
-        // Tabela de produtos
         await db.execute('''
           CREATE TABLE produtos(
             id TEXT PRIMARY KEY,
@@ -43,7 +33,6 @@ class DBHelper {
           )
         ''');
 
-        // Tabela de usuários
         await db.execute('''
           CREATE TABLE usuarios(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -77,7 +66,6 @@ class DBHelper {
     await db.delete('produtos');
   }
 
-  // 🧪 Teste rápido de depuração
   static Future<void> printUsuarios() async {
     final db = await database;
     final result = await db.query('usuarios');
