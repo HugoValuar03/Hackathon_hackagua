@@ -1,7 +1,8 @@
 // screens/perfil_screen.dart
 import 'package:flutter/material.dart';
 import 'package:hackathon_hackagua/widgets/scaffold_with_nav.dart';
-import '../main.dart';
+
+import '../../main.dart';
 
 class PerfilScreen extends StatelessWidget {
   const PerfilScreen({super.key});

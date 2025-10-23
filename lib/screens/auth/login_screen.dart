@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hackathon_hackagua/database/user_dao.dart';
 import 'package:hackathon_hackagua/database/db_helper.dart';
+import 'package:hackathon_hackagua/database/user_dao.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -136,23 +136,36 @@ class _LoginScreenState extends State<LoginScreen> {
                                   final result = await db.query('usuarios');
 
                                   if (result.isEmpty) {
-                                    debugPrint('Nenhum usuário encontrado no banco.');
+                                    debugPrint(
+                                      'Nenhum usuário encontrado no banco.',
+                                    );
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Nenhum usuário cadastrado.')),
+                                      const SnackBar(
+                                        content: Text(
+                                          'Nenhum usuário cadastrado.',
+                                        ),
+                                      ),
                                     );
                                   } else {
                                     for (var row in result) {
-                                      debugPrint('🧍 Usuário: ${row['nome']} | Email: ${row['email']} | Tipo: ${row['tipo']}');
+                                      debugPrint(
+                                        '🧍 Usuário: ${row['nome']} | Email: ${row['email']} | Tipo: ${row['tipo']}',
+                                      );
                                     }
 
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('${result.length} usuários encontrados (veja no console).')),
+                                      SnackBar(
+                                        content: Text(
+                                          '${result.length} usuários encontrados (veja no console).',
+                                        ),
+                                      ),
                                     );
                                   }
                                 },
-                                child: const Text('🔍 Testar Banco (Listar Usuários)'),
+                                child: const Text(
+                                  '🔍 Testar Banco (Listar Usuários)',
+                                ),
                               ),
-
                             ],
                           ),
                         ),
@@ -197,9 +210,9 @@ class _LoginScreenState extends State<LoginScreen> {
       final usuario = await UsuarioDao.buscarPorEmailESenha(email, senha);
 
       if (usuario != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Bem-vindo, ${usuario.nome}!')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Bem-vindo, ${usuario.nome}!')));
 
         // Redireciona para a tela principal (marketplace)
         Navigator.pushReplacementNamed(context, '/marketplace');
@@ -209,9 +222,9 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao fazer login: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erro ao fazer login: $e')));
     }
   }
 }
@@ -244,9 +257,7 @@ class _TopBackdrop extends StatelessWidget {
       alignment: Alignment.topCenter,
       child: IgnorePointer(
         ignoring: true,
-        child: Container(
-          height: MediaQuery.of(context).size.height * 0.38,
-        ),
+        child: Container(height: MediaQuery.of(context).size.height * 0.38),
       ),
     );
   }

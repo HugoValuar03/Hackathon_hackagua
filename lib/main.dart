@@ -1,17 +1,17 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:hackathon_hackagua/screens/marketplace_screen.dart';
+import 'package:hackathon_hackagua/screens/Produtor/marketplace_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'database/db_helper.dart';
 import 'models.dart';
-import 'screens/beneficios_screen.dart';
-import 'screens/cadastro_screen.dart';
-import 'screens/login_screen.dart';
+import 'screens/Produtor/beneficios_screen.dart';
+import 'screens/auth/cadastro_screen.dart';
+import 'screens/auth/login_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/splash_screen.dart';
-import 'screens/perfil_screen.dart';
+import 'screens/Produtor/perfil_screen.dart';
 
 
 void main() {

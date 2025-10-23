@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../widgets/scaffold_with_nav.dart';
+import '../../widgets/scaffold_with_nav.dart';
 
 class BeneficiosScreen extends StatelessWidget {
   const BeneficiosScreen({super.key});

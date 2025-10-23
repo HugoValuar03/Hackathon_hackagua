@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../main.dart';
-import '../models.dart';
-import '../widgets/scaffold_with_nav.dart';
+
+import '../../main.dart';
+import '../../models.dart';
+import '../../widgets/scaffold_with_nav.dart';
 
 class MarketplaceScreen extends StatefulWidget {
   const MarketplaceScreen({super.key});
@@ -19,8 +20,8 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
     final produtosFiltrados = _filtroCategoria == 'todos'
         ? AppState.produtos
         : AppState.produtos
-        .where((p) => p.categoria == _filtroCategoria)
-        .toList();
+              .where((p) => p.categoria == _filtroCategoria)
+              .toList();
 
     return ScaffoldWithNav(
       title: 'Marketplace Verde',
@@ -36,10 +37,16 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
               decoration: const InputDecoration(
                 labelText: 'Filtrar por categoria',
                 border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
               ),
               items: const [
-                DropdownMenuItem(value: 'todos', child: Text('Todas as Categorias')),
+                DropdownMenuItem(
+                  value: 'todos',
+                  child: Text('Todas as Categorias'),
+                ),
                 DropdownMenuItem(value: 'composto', child: Text('Composto')),
                 DropdownMenuItem(value: 'sementes', child: Text('Sementes')),
                 DropdownMenuItem(value: 'credito', child: Text('Créditos')),
@@ -54,7 +61,10 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
               itemBuilder: (context, index) {
                 final produto = produtosFiltrados[index];
                 return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                   child: ListTile(
                     leading: Image.asset(
                       produto.imagemUrl,
@@ -90,9 +100,9 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
         SnackBar(content: Text('Compra realizada: ${produto.nome}!')),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Pontos insuficientes!')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Pontos insuficientes!')));
     }
   }
 }
