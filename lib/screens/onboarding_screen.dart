@@ -14,6 +14,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final pages = <Widget>[
+      _buildPage(
+        'Bem-vindo ao BioCycle',
+        'Conectamos geradores e coletores de resíduos orgânicos.',
+        Icons.eco,
+      ),
+      _buildPage(
+        'Permissões',
+        'Precisamos de sua localização para sugerir coletas próximas.',
+        Icons.location_on,
+      ),
+      _buildPage(
+        'Comece Agora',
+        'Cadastre geradores e solicite coletas facilmente.',
+        Icons.check,
+      ),
+    ];
+
     return Scaffold(
       body: PageView(
         controller: _controller,
@@ -42,6 +61,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              _DotsIndicator(
+                count: pages.length,
+                index: _currentPage,
+                onDotTap: (i) => _controller.animateToPage(
+                  i,
+                  duration: const Duration(milliseconds: 280),
+                  curve: Curves.easeOut,
+                ),
+              ),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -83,6 +111,50 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Text(subtitle, textAlign: TextAlign.center),
         ],
       ),
+    );
+  }
+}
+
+class _DotsIndicator extends StatelessWidget {
+  const _DotsIndicator({
+    required this.count,
+    required this.index,
+    this.onDotTap,
+  });
+
+  final int count;
+  final int index;
+  final ValueChanged<int>? onDotTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final activeColor = Theme
+        .of(context)
+        .colorScheme
+        .primary;
+    final inactiveColor = Colors.grey.withOpacity(0.35);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(count, (i) {
+        final isActive = i == index;
+        return GestureDetector(
+          onTap: onDotTap == null ? null : () => onDotTap!(i),
+          behavior: HitTestBehavior.opaque,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOut,
+            margin: const EdgeInsets.symmetric(horizontal: 5),
+            height: 8,
+            width: isActive ? 22 : 8,
+            // vira “pill” quando ativo
+            decoration: BoxDecoration(
+              color: isActive ? activeColor : inactiveColor,
+              borderRadius: BorderRadius.circular(999),
+            ),
+          ),
+        );
+      }),
     );
   }
 }
