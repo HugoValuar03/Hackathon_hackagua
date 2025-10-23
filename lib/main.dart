@@ -23,11 +23,22 @@ import 'screens/coletor/coletor_dashboard.dart';
 import 'screens/coletor/coletor_marketplace_screen.dart';
 import 'screens/coletor/coletor_perfil_screen.dart';
 
+
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await AppState.loadData(); // garante que o banco e SharedPrefs são carregados
+
+  // Inicializa sqflite para desktop
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
+
+  // Carrega dados globais
+  await AppState.loadData();
+
   runApp(const BioCycleApp());
 }
+
 
 class BioCycleApp extends StatelessWidget {
   const BioCycleApp({super.key});

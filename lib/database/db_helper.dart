@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../models.dart';
@@ -13,31 +12,13 @@ class DBHelper {
   }
 
   static Future<Database> _initDB() async {
-<<<<<<< HEAD
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'biocycle.db');
-=======
-    String path;
+    final dbPath = await getDatabasesPath(); // Funciona para mobile e desktop agora
+    final path = join(dbPath, _dbName);
 
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-      // Caminho manual para desktop
-      path = join(Directory.current.path, _dbName);
-    } else {
-      // Caminho padrão para Android/iOS
-      final dbPath = await getDatabasesPath();
-      path = join(dbPath, _dbName);
-    }
->>>>>>> origin/master
-
-    // 🔁 Sempre recria o banco ao iniciar o app
-    await deleteDatabase(path);
-
-    // 🔧 Criação do novo banco
     return await openDatabase(
       path,
       version: 1,
       onCreate: (db, version) async {
-        // 🧱 Tabela de produtos
         await db.execute('''
           CREATE TABLE produtos(
             id TEXT PRIMARY KEY,
@@ -49,7 +30,6 @@ class DBHelper {
           )
         ''');
 
-        // 🧱 Tabela de usuários
         await db.execute('''
           CREATE TABLE usuarios (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -81,7 +61,6 @@ class DBHelper {
     );
   }
 
-  // 🧩 CRUD de produtos (mantido igual ao original)
   static Future<void> insertProduto(Produto produto) async {
     final db = await database;
     await db.insert(
@@ -102,7 +81,6 @@ class DBHelper {
     await db.delete('produtos');
   }
 
-  // 🧪 Utilitário opcional: listar usuários no console
   static Future<void> printUsuarios() async {
     final db = await database;
     final users = await db.query('usuarios');
