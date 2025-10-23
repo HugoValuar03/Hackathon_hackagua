@@ -121,6 +121,7 @@ class ProdutorBeneficiosScreen extends StatelessWidget {
     return ScaffoldWithNav(
       title: 'Benefícios',
       currentIndex: 2,
+      role: UserRole.produtor,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

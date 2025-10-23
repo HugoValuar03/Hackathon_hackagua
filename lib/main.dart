@@ -65,14 +65,8 @@ class BioCycleApp extends StatelessWidget {
         '/coletor/dashboard': (context) => const ColetorDashboard(),
         '/coletor/marketplace': (context) => const ColetorMarketplaceScreen(),
         '/coletor/perfil': (context) => const ColetorPerfilScreen(),
-
-        // ==== ALIAS GENÉRICOS (fallback para compatibilidade de navegação) ====
-        '/mapa': (context) => const ProdutorMarketplaceScreen(),
-        '/beneficios': (context) => const ProdutorBeneficiosScreen(),
-        '/perfil': (context) => const ProdutorPerfilScreen(),
       },
 
-      // === TRATAMENTO DE ROTA DESCONHECIDA ===
       onUnknownRoute: (settings) {
         debugPrint('⚠️ Rota não encontrada: ${settings.name}');
         return MaterialPageRoute(

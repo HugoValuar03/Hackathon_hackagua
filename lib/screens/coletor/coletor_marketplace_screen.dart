@@ -26,6 +26,7 @@ class _ColetorMarketplaceScreen extends State<ColetorMarketplaceScreen> {
     return ScaffoldWithNav(
       title: 'Marketplace Verde',
       currentIndex: _tabIndex,
+      role: UserRole.coletor,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

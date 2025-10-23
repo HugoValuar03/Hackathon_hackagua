@@ -121,6 +121,7 @@ class ColetorDashboard extends StatelessWidget {
     return ScaffoldWithNav(
       title: 'Benefícios',
       currentIndex: 2,
+      role: UserRole.coletor,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

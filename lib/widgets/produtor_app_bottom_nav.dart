@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class AppBottomNav extends StatelessWidget {
-  const AppBottomNav({
+class ProdutorAppBottomNav extends StatelessWidget {
+  const ProdutorAppBottomNav({
     super.key,
     required this.currentIndex,
     this.enabled = true,
@@ -10,12 +10,12 @@ class AppBottomNav extends StatelessWidget {
   final int currentIndex;
   final bool enabled;
 
-  /// Rotas em ordem do índice da barra.
+  /// Rotas em ordem do índice da barra (produtor).
   static const routes = <String>[
-    '/marketplace',
-    '/mapa',
-    '/beneficios',
-    '/perfil',
+    '/produtor/marketplace',
+    '/produtor/mapa',
+    '/produtor/beneficios',
+    '/produtor/perfil',
   ];
 
   @override
@@ -29,7 +29,6 @@ class AppBottomNav extends StatelessWidget {
       onTap: enabled
           ? (i) {
         if (i == currentIndex) return;
-        // Troca de aba sem empilhar telas
         Navigator.pushReplacementNamed(context, routes[i]);
       }
           : null,

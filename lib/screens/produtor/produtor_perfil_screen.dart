@@ -11,8 +11,9 @@ class ProdutorPerfilScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScaffoldWithNav(
-      title: 'Perfil',
+      title: 'Perfil Produtor',
       currentIndex: _tabIndex,
+      role: UserRole.produtor,
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 16.0),
         children: [

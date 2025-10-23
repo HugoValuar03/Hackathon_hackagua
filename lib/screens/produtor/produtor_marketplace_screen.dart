@@ -26,6 +26,7 @@ class _MarketplaceScreenState extends State<ProdutorMarketplaceScreen> {
     return ScaffoldWithNav(
       title: 'Marketplace Verde',
       currentIndex: _tabIndex,
+      role: UserRole.produtor,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

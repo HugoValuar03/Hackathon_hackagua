@@ -11,7 +11,8 @@ class ColetorPerfilScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScaffoldWithNav(
-      title: 'Perfil',
+      title: 'Perfil Coletor',
+      role: UserRole.coletor,
       currentIndex: _tabIndex,
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 16.0),
