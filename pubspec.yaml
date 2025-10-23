@@ -1,7 +1,7 @@
 name: hackathon_hackagua
 description: A new Flutter project.
 
-publish_to: 'none' # Remove se for publicar no pub.dev
+publish_to:
 
 version: 1.0.0+1
 
@@ -14,17 +14,17 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # SQLite
+
   sqflite: ^2.2.8+4
   sqflite_common_ffi: ^2.3.0
 
-  # Mapas e localização
+
   google_maps_flutter: ^2.7.0
   geolocator: ^14.0.2
   flutter_map: ^6.0.1
   latlong2: ^0.9.0
 
-  # Outros
+
   shared_preferences: ^2.2.2
   flutter_svg: ^2.0.9
   lottie: ^2.7.0
@@ -36,6 +36,12 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+
+flutter_launcher_icons:
+  ios: true
+  android: true
+  image_path: "lib/assets/app_logo.png"
 
 flutter:
   uses-material-design: true
