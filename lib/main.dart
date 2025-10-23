@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hackathon_hackagua/maps/maps_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'database/db_helper.dart';
 import 'models.dart';
@@ -25,27 +27,34 @@ import 'screens/coletor/coletor_marketplace_screen.dart';
 import 'screens/coletor/coletor_perfil_screen.dart';
 
 
-
+// =====================================
+// MAIN UNIVERSAL (mobile + desktop)
+// =====================================
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // 🔹 Ativa o modo FFI apenas em desktop
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
 
-  // Carrega dados globais
+  // 🔹 Carrega dados globais
   await AppState.loadData();
 
   runApp(const BioCycleApp());
 }
 
-
+// =====================================
+// APP
+// =====================================
 class BioCycleApp extends StatelessWidget {
   const BioCycleApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
-
-    title: 'BioCycle',
+      title: 'BioCycle',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         snackBarTheme: SnackBarThemeData(
@@ -66,14 +75,11 @@ class BioCycleApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/cadastro': (context) => const CadastroScreen(),
 
-
-
         // ==== PRODUTOR ====
         '/produtor/beneficios': (context) => const ProdutorBeneficiosScreen(),
         '/produtor/marketplace': (context) => const ProdutorMarketplaceScreen(),
         '/produtor/perfil': (context) => const ProdutorPerfilScreen(),
         '/produtor/mapa': (context) => const MapsScreen(),
-
 
         // ==== COLETOR ====
         '/coletor/dashboard': (context) => const ColetorDashboard(),
@@ -91,9 +97,9 @@ class BioCycleApp extends StatelessWidget {
   }
 }
 
-/// ===============================================================
-/// GERENCIAMENTO GLOBAL DE ESTADO (AppState)
-/// ===============================================================
+// =====================================
+// ESTADO GLOBAL
+// =====================================
 class AppState {
   static List<Gerador> geradores = [];
   static List<Coletor> coletores = [];
@@ -101,7 +107,6 @@ class AppState {
   static List<Produto> produtos = [];
   static int pontos = 0;
 
-  /// Carrega SharedPreferences e dados locais
   static Future<void> loadData() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -110,19 +115,13 @@ class AppState {
     final co = prefs.getString('coletas');
 
     if (g != null) {
-      geradores = (jsonDecode(g) as List)
-          .map((e) => Gerador.fromJson(e))
-          .toList();
+      geradores = (jsonDecode(g) as List).map((e) => Gerador.fromJson(e)).toList();
     }
     if (c != null) {
-      coletores = (jsonDecode(c) as List)
-          .map((e) => Coletor.fromJson(e))
-          .toList();
+      coletores = (jsonDecode(c) as List).map((e) => Coletor.fromJson(e)).toList();
     }
     if (co != null) {
-      coletas = (jsonDecode(co) as List)
-          .map((e) => Coleta.fromJson(e))
-          .toList();
+      coletas = (jsonDecode(co) as List).map((e) => Coleta.fromJson(e)).toList();
     }
 
     pontos = prefs.getInt('pontos') ?? 0;
@@ -164,16 +163,12 @@ class AppState {
     }
   }
 
-  /// Salva estado global
   static Future<void> saveData() async {
     final prefs = await SharedPreferences.getInstance();
     prefs
-      ..setString('geradores',
-          jsonEncode(geradores.map((e) => e.toJson()).toList()))
-      ..setString('coletores',
-          jsonEncode(coletores.map((e) => e.toJson()).toList()))
-      ..setString(
-          'coletas', jsonEncode(coletas.map((e) => e.toJson()).toList()))
+      ..setString('geradores', jsonEncode(geradores.map((e) => e.toJson()).toList()))
+      ..setString('coletores', jsonEncode(coletores.map((e) => e.toJson()).toList()))
+      ..setString('coletas', jsonEncode(coletas.map((e) => e.toJson()).toList()))
       ..setInt('pontos', pontos);
   }
 }
