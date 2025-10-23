@@ -11,6 +11,7 @@ import 'screens/cadastro_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/splash_screen.dart';
+import 'screens/perfil_screen.dart';
 
 
 void main() {
@@ -37,6 +38,7 @@ class BioCycleApp extends StatelessWidget {
         '/cadastro': (context) => const CadastroScreen(),
         '/beneficios': (context) => const BeneficiosScreen(),
         '/marketplace': (context) => const MarketplaceScreen(),
+        '/perfil': (context) => const PerfilScreen(),
       },
     );
   }

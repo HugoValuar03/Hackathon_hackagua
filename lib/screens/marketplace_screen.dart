@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../main.dart';
 import '../models.dart';
+import '../widgets/scaffold_with_nav.dart';
 
 class MarketplaceScreen extends StatefulWidget {
   const MarketplaceScreen({super.key});
@@ -10,6 +11,7 @@ class MarketplaceScreen extends StatefulWidget {
 }
 
 class _MarketplaceScreenState extends State<MarketplaceScreen> {
+  static const _tabIndex = 0;
   String _filtroCategoria = 'todos';
 
   @override
@@ -17,37 +19,27 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
     final produtosFiltrados = _filtroCategoria == 'todos'
         ? AppState.produtos
         : AppState.produtos
-              .where((p) => p.categoria == _filtroCategoria)
-              .toList();
+        .where((p) => p.categoria == _filtroCategoria)
+        .toList();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Marketplace Verde'),
-        actions: [
-          Text(
-            'Pontos: ${AppState.pontos}',
-            style: const TextStyle(fontSize: 16),
-          ),
-        ],
-      ),
+    return ScaffoldWithNav(
+      title: 'Marketplace Verde',
+      currentIndex: _tabIndex,
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/beneficios');
-            },
-            child: Text('Benefícios'),
-          ),
+          const SizedBox(height: 12),
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: DropdownButton<String>(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: DropdownButtonFormField<String>(
               value: _filtroCategoria,
+              decoration: const InputDecoration(
+                labelText: 'Filtrar por categoria',
+                border: OutlineInputBorder(),
+                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              ),
               items: const [
-                DropdownMenuItem(
-                  value: 'todos',
-                  child: Text('Todas as Categorias'),
-                ),
+                DropdownMenuItem(value: 'todos', child: Text('Todas as Categorias')),
                 DropdownMenuItem(value: 'composto', child: Text('Composto')),
                 DropdownMenuItem(value: 'sementes', child: Text('Sementes')),
                 DropdownMenuItem(value: 'credito', child: Text('Créditos')),
@@ -55,24 +47,27 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
               onChanged: (v) => setState(() => _filtroCategoria = v!),
             ),
           ),
+          const SizedBox(height: 8),
           Expanded(
             child: ListView.builder(
               itemCount: produtosFiltrados.length,
               itemBuilder: (context, index) {
                 final produto = produtosFiltrados[index];
                 return Card(
-                  margin: const EdgeInsets.all(8.0),
+                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: ListTile(
                     leading: Image.asset(
                       produto.imagemUrl,
-                      width: 50,
-                      height: 50,
+                      width: 56,
+                      height: 56,
                       fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => const Icon(Icons.image),
                     ),
                     title: Text(produto.nome),
                     subtitle: Text(
                       '${produto.descricao}\nPreço: ${produto.precoPontos} pontos',
                     ),
+                    isThreeLine: true,
                     trailing: ElevatedButton(
                       onPressed: () => _comprarProduto(produto),
                       child: const Text('Comprar'),
@@ -95,9 +90,9 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
         SnackBar(content: Text('Compra realizada: ${produto.nome}!')),
       );
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Pontos insuficientes!')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Pontos insuficientes!')),
+      );
     }
   }
 }

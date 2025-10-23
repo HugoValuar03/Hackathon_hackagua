@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../widgets/scaffold_with_nav.dart';
+
 class BeneficiosScreen extends StatelessWidget {
   const BeneficiosScreen({super.key});
 
@@ -44,77 +46,81 @@ class BeneficiosScreen extends StatelessWidget {
             ),
             children: [
               Padding(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 6),
-                    Text("Público-alvo:",
-                        style: textTheme.titleSmall!.copyWith(
-                            fontWeight: FontWeight.bold, color: primaryColor)),
-                    const SizedBox(height: 4),
-                    Text(publico.join(", "),
-                        style: textTheme.bodyMedium!.copyWith(height: 1.4)),
-                    const SizedBox(height: 12),
-                    Text("Requisitos:",
-                        style: textTheme.titleSmall!.copyWith(
-                            fontWeight: FontWeight.bold, color: primaryColor)),
-                    const SizedBox(height: 4),
-                    ...requisitos
-                        .map((r) => Padding(
-                      padding:
-                      const EdgeInsets.only(bottom: 4, right: 8),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("• ",
-                              style: TextStyle(color: primaryColor)),
-                          Expanded(child: Text(r)),
-                        ],
+                    Text(
+                      "Público-alvo:",
+                      style: textTheme.titleSmall!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: primaryColor,
                       ),
-                    ))
-                        .toList(),
-                    const SizedBox(height: 12),
-                    Text("Benefícios:",
-                        style: textTheme.titleSmall!.copyWith(
-                            fontWeight: FontWeight.bold, color: primaryColor)),
+                    ),
                     const SizedBox(height: 4),
-                    ...beneficios
-                        .map((b) => Padding(
-                      padding:
-                      const EdgeInsets.only(bottom: 4, right: 8),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("• ",
-                              style: TextStyle(color: primaryColor)),
-                          Expanded(child: Text(b)),
-                        ],
+                    Text(
+                      publico.join(", "),
+                      style: textTheme.bodyMedium!.copyWith(height: 1.4),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      "Requisitos:",
+                      style: textTheme.titleSmall!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: primaryColor,
                       ),
-                    ))
-                        .toList(),
+                    ),
+                    const SizedBox(height: 4),
+                    ...requisitos.map(
+                      (r) => Padding(
+                        padding: const EdgeInsets.only(bottom: 4, right: 8),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("• ", style: TextStyle(color: primaryColor)),
+                            Expanded(child: Text(r)),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      "Benefícios:",
+                      style: textTheme.titleSmall!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: primaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    ...beneficios.map(
+                      (b) => Padding(
+                        padding: const EdgeInsets.only(bottom: 4, right: 8),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("• ", style: TextStyle(color: primaryColor)),
+                            Expanded(child: Text(b)),
+                          ],
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 16),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
       );
     }
 
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: primaryColor,
-        title: const Text(
-          'Benefícios',
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22),
-        ),
-        centerTitle: true,
-      ),
+    return ScaffoldWithNav(
+      title: 'Benefícios',
+      currentIndex: 2,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -127,7 +133,7 @@ class BeneficiosScreen extends StatelessWidget {
                 "Empresas",
                 "escolas",
                 "restaurantes",
-                "produtores de fertilizantes"
+                "produtores de fertilizantes",
               ],
               requisitos: [
                 "Doar ou processar mínimo de 500 kg de resíduos orgânicos por mês",
@@ -152,7 +158,7 @@ class BeneficiosScreen extends StatelessWidget {
                 "Escolas",
                 "pequenos negócios",
                 "produtores locais",
-                "pessoas físicas engajadas"
+                "pessoas físicas engajadas",
               ],
               requisitos: [
                 "Doar mínimo de 100 kg de resíduos orgânicos por mês",
@@ -175,7 +181,7 @@ class BeneficiosScreen extends StatelessWidget {
                 "Pessoas físicas",
                 "famílias",
                 "estudantes",
-                "pequenos doadores"
+                "pequenos doadores",
               ],
               requisitos: [
                 "Doar mínimo de 20 kg de resíduos orgânicos por mês",
