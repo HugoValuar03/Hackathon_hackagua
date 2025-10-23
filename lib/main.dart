@@ -25,14 +25,10 @@ import 'screens/coletor/coletor_marketplace_screen.dart';
 import 'screens/coletor/coletor_perfil_screen.dart';
 
 
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Inicializa sqflite para desktop
-  sqfliteFfiInit();
-  databaseFactory = databaseFactoryFfi;
 
   // Carrega dados globais
   await AppState.loadData();

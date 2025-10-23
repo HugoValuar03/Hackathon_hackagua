@@ -14,7 +14,7 @@ dependencies:
   flutter:
     sdk: flutter
   sqflite: ^2.2.8+4
-  sqflite_common_ffi: ^2.3.0
+
   google_maps_flutter: ^2.7.0
   geolocator: ^14.0.2
   shared_preferences: ^2.2.2
