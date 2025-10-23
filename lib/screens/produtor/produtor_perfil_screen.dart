@@ -19,6 +19,7 @@ class _ProdutorPerfilScreenState extends State<ProdutorPerfilScreen> {
     super.initState();
     _carregarUsuario();
   }
+
   Future<void> _carregarUsuario() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -30,7 +31,7 @@ class _ProdutorPerfilScreenState extends State<ProdutorPerfilScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme;
+    final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -38,7 +39,8 @@ class _ProdutorPerfilScreenState extends State<ProdutorPerfilScreen> {
           'Perfil do Produtor',
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
-        backgroundColor: const Color(0xFF6CB40C),
+        backgroundColor: cs.primary,     // antes: Color(0xFF6CB40C)
+        foregroundColor: cs.onPrimary,   // garante contraste
         elevation: 0,
         centerTitle: true,
       ),
@@ -48,32 +50,51 @@ class _ProdutorPerfilScreenState extends State<ProdutorPerfilScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // ========================
-            // TOPO DO PERFIL (atualizado)
+            // TOPO DO PERFIL
             // ========================
             Stack(
               children: [
-                CircleAvatar(
-                  radius: 55,
-                  backgroundColor: const Color(0xFFDDEED2),
-                  backgroundImage:
-                  (fotoPerfil != null) ? AssetImage(fotoPerfil!) : null,
-                  child: fotoPerfil == null
-                      ? const Icon(Icons.person, size: 55, color: Colors.black45)
-                      : null,
+                Semantics(
+                  label: 'Foto de perfil',
+                  child: CircleAvatar(
+                    radius: 55,
+                    backgroundColor: cs.secondaryContainer, // antes: 0xFFDDEED2
+                    backgroundImage: (fotoPerfil != null)
+                        ? AssetImage(fotoPerfil!)
+                        : null,
+                    child: fotoPerfil == null
+                        ? Icon(
+                      Icons.person,
+                      size: 55,
+                      color: cs.onSecondaryContainer, // antes: Colors.black45
+                    )
+                        : null,
+                  ),
                 ),
                 Positioned(
                   bottom: 0,
                   right: 4,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF2F4C30),
-                      shape: BoxShape.circle,
-                    ),
-                    padding: const EdgeInsets.all(6),
-                    child: const Icon(
-                      Icons.camera_alt_rounded,
-                      color: Colors.white,
-                      size: 20,
+                  child: Tooltip(
+                    message: 'Alterar foto',
+                    child: Material(
+                      color: cs.primary, // antes: 0xFF2F4C30
+                      shape: const CircleBorder(),
+                      child: InkWell(
+                        customBorder: const CircleBorder(),
+                        onTap: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Alterar foto (em breve)')),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(6),
+                          child: Icon(
+                            Icons.camera_alt_rounded,
+                            color: cs.onPrimary, // antes: Colors.white
+                            size: 20,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -82,27 +103,27 @@ class _ProdutorPerfilScreenState extends State<ProdutorPerfilScreen> {
             const SizedBox(height: 16),
             Text(
               nome,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                color: cs.onSurface, // antes: Colors.black87
               ),
             ),
             const SizedBox(height: 4),
             Text(
               email,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
-                color: Colors.grey,
+                color: cs.onSurfaceVariant, // antes: Colors.grey
               ),
             ),
             const SizedBox(height: 8),
             Text(
               tipo,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF2F4C30),
+                color: cs.primary, // antes: 0xFF2F4C30
               ),
             ),
             const SizedBox(height: 30),
@@ -112,26 +133,26 @@ class _ProdutorPerfilScreenState extends State<ProdutorPerfilScreen> {
             // ==============================================================
             Card(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
+                borderRadius: BorderRadius.circular(12),
+              ),
               elevation: 1,
               child: Padding(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       'Informações Gerais',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF2F4C30),
+                        color: cs.primary, // antes: 0xFF2F4C30
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       'Gerencie suas informações de produtor, pontos acumulados e benefícios disponíveis.',
-                      style: TextStyle(color: Colors.black54),
+                      style: TextStyle(color: cs.onSurfaceVariant), // antes: Colors.black54
                     ),
                   ],
                 ),
@@ -139,36 +160,41 @@ class _ProdutorPerfilScreenState extends State<ProdutorPerfilScreen> {
             ),
             const SizedBox(height: 20),
 
-            // Exemplo de seção de pontos
+            // Seção de pontos
             Card(
-              color: const Color(0xFF6CB40C),
+              color: cs.primary, // antes: 0xFF6CB40C
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14)),
+                borderRadius: BorderRadius.circular(14),
+              ),
               elevation: 2,
               child: Padding(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                 child: Column(
-                  children: const [
+                  children: [
                     Text(
                       'Seus Pontos',
                       style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
+                        fontSize: 18,
+                        color: cs.onPrimary,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    SizedBox(height: 6),
+                    const SizedBox(height: 6),
                     Text(
                       '1200 pts',
                       style: TextStyle(
-                          fontSize: 26,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800),
+                        fontSize: 26,
+                        color: cs.onPrimary,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       'Troque por benefícios no marketplace!',
-                      style: TextStyle(color: Colors.white70, fontSize: 14),
+                      style: TextStyle(
+                        color: cs.onPrimary.withOpacity(.8), // antes: Colors.white70
+                        fontSize: 14,
+                      ),
                     ),
                   ],
                 ),
@@ -186,8 +212,8 @@ class _ProdutorPerfilScreenState extends State<ProdutorPerfilScreen> {
                   icon: const Icon(Icons.shopping_bag),
                   label: const Text('Marketplace'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2F4C30),
-                    foregroundColor: Colors.white,
+                    backgroundColor: cs.primary,   // antes: 0xFF2F4C30
+                    foregroundColor: cs.onPrimary,
                     minimumSize: const Size(140, 44),
                   ),
                 ),
@@ -197,8 +223,8 @@ class _ProdutorPerfilScreenState extends State<ProdutorPerfilScreen> {
                   icon: const Icon(Icons.redeem_rounded),
                   label: const Text('Benefícios'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6CB40C),
-                    foregroundColor: Colors.white,
+                    backgroundColor: cs.secondary, // antes: 0xFF6CB40C
+                    foregroundColor: cs.onSecondary,
                     minimumSize: const Size(140, 44),
                   ),
                 ),
@@ -206,44 +232,43 @@ class _ProdutorPerfilScreenState extends State<ProdutorPerfilScreen> {
             ),
             const SizedBox(height: 25),
 
-            // Exemplo de seção de histórico
-            const Align(
+            // Seção de histórico
+            Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 'Histórico de Coletas',
                 style: TextStyle(
-                    fontSize: 18,
-                    color: Color(0xFF2F4C30),
-                    fontWeight: FontWeight.bold),
+                  fontSize: 18,
+                  color: cs.primary, // antes: 0xFF2F4C30
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             const SizedBox(height: 10),
             ListView(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              children: const [
+              children: [
                 ListTile(
-                  leading:
-                  Icon(Icons.recycling, color: Color(0xFF2F4C30), size: 28),
-                  title: Text('Coleta nº 1043'),
-                  subtitle: Text('10 de Outubro de 2025'),
+                  leading: Icon(Icons.recycling, color: cs.primary, size: 28),
+                  title: const Text('Coleta nº 1043'),
+                  subtitle: const Text('10 de Outubro de 2025'),
                   trailing: Text(
                     '+50 pts',
                     style: TextStyle(
-                      color: Color(0xFF6CB40C),
+                      color: cs.primary, // antes: 0xFF6CB40C
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
                 ListTile(
-                  leading:
-                  Icon(Icons.recycling, color: Color(0xFF2F4C30), size: 28),
-                  title: Text('Coleta nº 1032'),
-                  subtitle: Text('28 de Setembro de 2025'),
+                  leading: Icon(Icons.recycling, color: cs.primary, size: 28),
+                  title: const Text('Coleta nº 1032'),
+                  subtitle: const Text('28 de Setembro de 2025'),
                   trailing: Text(
                     '+80 pts',
                     style: TextStyle(
-                      color: Color(0xFF6CB40C),
+                      color: cs.primary, // antes: 0xFF6CB40C
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -263,8 +288,8 @@ class _ProdutorPerfilScreenState extends State<ProdutorPerfilScreen> {
               icon: const Icon(Icons.logout_rounded),
               label: const Text('Sair'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.redAccent.shade700,
-                foregroundColor: Colors.white,
+                backgroundColor: cs.error,   // antes: Colors.redAccent.shade700
+                foregroundColor: cs.onError,
                 minimumSize: const Size(160, 48),
               ),
             ),
