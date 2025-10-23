@@ -62,4 +62,19 @@ class UsuarioDao {
     }
     return null;
   }
+
+  // Buscar usuário por e-mail (para verificar duplicado)
+  static Future<Usuario?> buscarPorEmail(String email) async {
+    final db = await DBHelper.database;
+    final result = await db.query(
+      'usuarios',
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+
+    if (result.isNotEmpty) {
+      return Usuario.fromMap(result.first);
+    }
+    return null;
+  }
 }

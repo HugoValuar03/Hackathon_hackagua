@@ -5,6 +5,9 @@ import '../models.dart';
 class DBHelper {
   static Database? _db;
 
+  static const _dbName = 'biocycle.db';
+  static const _dbVersion = 1;
+
   static Future<Database> get database async {
     if (_db != null) return _db!;
     _db = await _initDB();
@@ -13,13 +16,13 @@ class DBHelper {
 
   static Future<Database> _initDB() async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'biocycle.db');
+    final path = join(dbPath, _dbName);
 
     return await openDatabase(
       path,
-      version: 1,
+      version: _dbVersion,
       onCreate: (db, version) async {
-        // 🟩 Tabela de produtos (já existente)
+        // Tabela de produtos
         await db.execute('''
           CREATE TABLE produtos(
             id TEXT PRIMARY KEY,
@@ -31,7 +34,7 @@ class DBHelper {
           )
         ''');
 
-        // 🟩 Tabela de usuários (necessária para o cadastro/login)
+        // Tabela de usuários
         await db.execute('''
           CREATE TABLE usuarios(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,7 +48,6 @@ class DBHelper {
     );
   }
 
-  // 🧩 Inserir produto
   static Future<void> insertProduto(Produto produto) async {
     final db = await database;
     await db.insert(
@@ -55,16 +57,23 @@ class DBHelper {
     );
   }
 
-  // 🧩 Buscar produtos
   static Future<List<Produto>> getProdutos() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query('produtos');
     return List.generate(maps.length, (i) => Produto.fromJson(maps[i]));
   }
 
-  // 🧩 Deletar todos os produtos
   static Future<void> deleteAllProdutos() async {
     final db = await database;
     await db.delete('produtos');
+  }
+
+  // 🧪 Teste rápido de depuração
+  static Future<void> printUsuarios() async {
+    final db = await database;
+    final result = await db.query('usuarios');
+    for (final row in result) {
+      print('👤 Usuário: ${row['nome']} | Email: ${row['email']} | Tipo: ${row['tipo']}');
+    }
   }
 }

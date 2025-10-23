@@ -56,6 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: 28),
 
+                        // ================= FORM =================
                         Form(
                           key: _formKey,
                           autovalidateMode: AutovalidateMode.disabled,
@@ -118,58 +119,53 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 child: const Text('Entrar'),
                               ),
-                              const SizedBox(height: 8),
+
+                              const SizedBox(height: 12),
                               TextButton(
                                 onPressed: () => Navigator.pushReplacementNamed(
                                   context,
-                                  '/marketplace',
+                                  '/produtor/marketplace',
                                 ),
                                 child: Text(
                                   'Modo convidado',
                                   style: TextStyle(color: color.primary),
                                 ),
                               ),
-                              // 🧪 BOTÃO TEMPORÁRIO DE TESTE DO BANCO
+
+                              // Botão opcional de debug
+                              const SizedBox(height: 8),
                               ElevatedButton(
                                 onPressed: () async {
                                   final db = await DBHelper.database;
                                   final result = await db.query('usuarios');
 
                                   if (result.isEmpty) {
-                                    debugPrint(
-                                      'Nenhum usuário encontrado no banco.',
-                                    );
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                        content: Text(
-                                          'Nenhum usuário cadastrado.',
-                                        ),
+                                        content: Text('Nenhum usuário cadastrado.'),
                                       ),
                                     );
                                   } else {
+                                    debugPrint('📋 Usuários encontrados:');
                                     for (var row in result) {
                                       debugPrint(
-                                        '🧍 Usuário: ${row['nome']} | Email: ${row['email']} | Tipo: ${row['tipo']}',
-                                      );
+                                          '🧍 ${row['nome']} | ${row['email']} | ${row['tipo']}');
                                     }
-
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text(
-                                          '${result.length} usuários encontrados (veja no console).',
-                                        ),
+                                            '${result.length} usuários listados no console.'),
                                       ),
                                     );
                                   }
                                 },
-                                child: const Text(
-                                  '🔍 Testar Banco (Listar Usuários)',
-                                ),
+                                child: const Text('🔍 Testar Banco (Listar Usuários)'),
                               ),
                             ],
                           ),
                         ),
                         const SizedBox(height: 25),
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -198,36 +194,115 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // 🆕 Função atualizada para login real com SQLite
+  // ===============================================================
+  // LOGIN REAL
+  // ===============================================================
   Future<void> _onSubmit() async {
     final ok = _formKey.currentState?.validate() ?? false;
     if (!ok) return;
 
     final email = _email.text.trim();
     final senha = _password.text.trim();
+    final messenger = ScaffoldMessenger.of(context);
 
     try {
       final usuario = await UsuarioDao.buscarPorEmailESenha(email, senha);
 
       if (usuario != null) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Bem-vindo, ${usuario.nome}!')));
+        // ✅ Mensagem de sucesso
+        messenger.showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.check_circle, color: Colors.white),
+                const SizedBox(width: 10),
+                Text('Bem-vindo, ${usuario.nome}!'),
+              ],
+            ),
+            backgroundColor: Colors.green.shade700,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            duration: const Duration(seconds: 2),
+          ),
+        );
 
-        // Redireciona para a tela principal (marketplace)
-        Navigator.pushReplacementNamed(context, '/marketplace');
+        await Future.delayed(const Duration(milliseconds: 800));
+
+        // 🔀 Redireciona conforme o tipo de usuário
+        if (usuario.tipo == 'Produtor') {
+          Navigator.pushReplacementNamed(context, '/produtor/marketplace');
+        } else if (usuario.tipo == 'Coletor') {
+          Navigator.pushReplacementNamed(context, '/coletor/marketplace');
+        } else {
+          messenger.showSnackBar(
+            SnackBar(
+              content: Row(
+                children: const [
+                  Icon(Icons.warning_amber_rounded, color: Colors.white),
+                  SizedBox(width: 10),
+                  Text('Tipo de usuário desconhecido.'),
+                ],
+              ),
+              backgroundColor: Colors.orange.shade700,
+              behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.all(12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('E-mail ou senha incorretos.')),
+        // ❌ E-mail ou senha incorretos
+        messenger.showSnackBar(
+          SnackBar(
+            content: Row(
+              children: const [
+                Icon(Icons.error_outline, color: Colors.white),
+                SizedBox(width: 10),
+                Text('E-mail ou senha incorretos.'),
+              ],
+            ),
+            backgroundColor: Colors.red.shade700,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            duration: const Duration(seconds: 3),
+          ),
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Erro ao fazer login: $e')));
+      messenger.showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.error_outline, color: Colors.white),
+              const SizedBox(width: 10),
+              Text('Erro ao fazer login: $e'),
+            ],
+          ),
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          duration: const Duration(seconds: 3),
+        ),
+      );
     }
   }
 }
+
+// ===============================================================
+// VISUAIS
+// ===============================================================
 
 class _BottomAccent extends StatelessWidget {
   const _BottomAccent();
@@ -257,7 +332,9 @@ class _TopBackdrop extends StatelessWidget {
       alignment: Alignment.topCenter,
       child: IgnorePointer(
         ignoring: true,
-        child: Container(height: MediaQuery.of(context).size.height * 0.38),
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.38,
+        ),
       ),
     );
   }
@@ -265,7 +342,6 @@ class _TopBackdrop extends StatelessWidget {
 
 class _FieldLabel extends StatelessWidget {
   const _FieldLabel(this.text);
-
   final String text;
 
   @override
