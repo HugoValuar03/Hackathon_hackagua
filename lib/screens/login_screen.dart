@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hackathon_hackagua/database/user_dao.dart';
+import 'package:hackathon_hackagua/database/db_helper.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -43,10 +45,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 20),
                         Image.asset('lib/assets/app_logo.png', width: 300),
                         const SizedBox(height: 8),
-                        Text(
+                        const Text(
                           'Entrar',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
                             letterSpacing: 0.5,
@@ -67,14 +69,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                 controller: _email,
                                 textInputAction: TextInputAction.next,
                                 keyboardType: TextInputType.emailAddress,
-                                // Se preferir, remova os autofillHints; às vezes dão warning no Web.
-                                // autofillHints: const [AutofillHints.email],
                                 validator: (v) {
                                   final s = v?.trim() ?? '';
                                   if (s.isEmpty || !s.contains('@')) {
                                     return 'Informe um e-mail válido';
                                   }
-                                  return null; // válido
+                                  return null;
                                 },
                                 decoration: const InputDecoration(
                                   hintText: 'Digite seu e-mail',
@@ -89,7 +89,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 textInputAction: TextInputAction.done,
                                 onFieldSubmitted: (_) => _onSubmit(),
                                 obscureText: _obscure,
-                                // autofillHints: const [AutofillHints.password],
                                 validator: (v) {
                                   final s = v ?? '';
                                   if (s.length < 6) {
@@ -131,6 +130,30 @@ class _LoginScreenState extends State<LoginScreen> {
                                   style: TextStyle(color: color.primary),
                                 ),
                               ),
+                              // 🧪 BOTÃO TEMPORÁRIO DE TESTE DO BANCO
+                              ElevatedButton(
+                                onPressed: () async {
+                                  final db = await DBHelper.database;
+                                  final result = await db.query('usuarios');
+
+                                  if (result.isEmpty) {
+                                    debugPrint('Nenhum usuário encontrado no banco.');
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Nenhum usuário cadastrado.')),
+                                    );
+                                  } else {
+                                    for (var row in result) {
+                                      debugPrint('🧍 Usuário: ${row['nome']} | Email: ${row['email']} | Tipo: ${row['tipo']}');
+                                    }
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('${result.length} usuários encontrados (veja no console).')),
+                                    );
+                                  }
+                                },
+                                child: const Text('🔍 Testar Banco (Listar Usuários)'),
+                              ),
+
                             ],
                           ),
                         ),
@@ -138,9 +161,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
+                            const Text(
                               'Não tem conta?',
-                              style: const TextStyle(color: Color(0xFF000000)),
+                              style: TextStyle(color: Color(0xFF000000)),
                             ),
                             TextButton(
                               onPressed: () => Navigator.pushReplacementNamed(
@@ -163,12 +186,34 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _onSubmit() {
-    final ok = _formKey.currentState?.validate() ?? false; // evita null→bool
+  // 🆕 Função atualizada para login real com SQLite
+  Future<void> _onSubmit() async {
+    final ok = _formKey.currentState?.validate() ?? false;
     if (!ok) return;
 
-    // Aqui você faria o login real (try/catch). Para agora:
-    Navigator.pushReplacementNamed(context, '/home');
+    final email = _email.text.trim();
+    final senha = _password.text.trim();
+
+    try {
+      final usuario = await UsuarioDao.buscarPorEmailESenha(email, senha);
+
+      if (usuario != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Bem-vindo, ${usuario.nome}!')),
+        );
+
+        // Redireciona para a tela principal (marketplace)
+        Navigator.pushReplacementNamed(context, '/marketplace');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('E-mail ou senha incorretos.')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao fazer login: $e')),
+      );
+    }
   }
 }
 

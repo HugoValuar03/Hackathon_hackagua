@@ -19,6 +19,7 @@ class DBHelper {
       path,
       version: 1,
       onCreate: (db, version) async {
+        // 🟩 Tabela de produtos (já existente)
         await db.execute('''
           CREATE TABLE produtos(
             id TEXT PRIMARY KEY,
@@ -29,10 +30,22 @@ class DBHelper {
             imagemUrl TEXT
           )
         ''');
+
+        // 🟩 Tabela de usuários (necessária para o cadastro/login)
+        await db.execute('''
+          CREATE TABLE usuarios(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT,
+            email TEXT UNIQUE,
+            senha TEXT,
+            tipo TEXT
+          )
+        ''');
       },
     );
   }
 
+  // 🧩 Inserir produto
   static Future<void> insertProduto(Produto produto) async {
     final db = await database;
     await db.insert(
@@ -42,12 +55,14 @@ class DBHelper {
     );
   }
 
+  // 🧩 Buscar produtos
   static Future<List<Produto>> getProdutos() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query('produtos');
     return List.generate(maps.length, (i) => Produto.fromJson(maps[i]));
   }
 
+  // 🧩 Deletar todos os produtos
   static Future<void> deleteAllProdutos() async {
     final db = await database;
     await db.delete('produtos');

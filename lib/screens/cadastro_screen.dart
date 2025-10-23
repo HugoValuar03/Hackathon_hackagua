@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hackathon_hackagua/database/user_dao.dart';
+import 'package:hackathon_hackagua/database/db_helper.dart';
 
 class CadastroScreen extends StatefulWidget {
   const CadastroScreen({super.key});
@@ -22,16 +24,20 @@ class _CadastroScreenState extends State<CadastroScreen>
 
   final _nomeProdutor = TextEditingController();
   final _emailProdutor = TextEditingController();
+  final _senhaProdutor = TextEditingController(); // 🆕 Campo de senha produtor
 
   final _nomeColetor = TextEditingController();
   final _areaColetor = TextEditingController();
+  final _senhaColetor = TextEditingController(); // 🆕 Campo de senha coletor
 
   @override
   void dispose() {
     _nomeProdutor.dispose();
     _emailProdutor.dispose();
+    _senhaProdutor.dispose(); // 🆕
     _nomeColetor.dispose();
     _areaColetor.dispose();
+    _senhaColetor.dispose(); // 🆕
     super.dispose();
   }
 
@@ -70,13 +76,12 @@ class _CadastroScreenState extends State<CadastroScreen>
                             show: _showProdutor,
                             nomeCtrl: _nomeProdutor,
                             emailCtrl: _emailProdutor,
-
+                            senhaCtrl: _senhaProdutor, // 🆕
                             tipos: _tiposGerador,
                             selectedTipo: _tipoGerador,
                             onChangedTipo: (v) =>
                                 setState(() => _tipoGerador = v),
-
-                            onSubmit: () {
+                            onSubmit: () async {
                               if (_tipoGerador == null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -87,13 +92,28 @@ class _CadastroScreenState extends State<CadastroScreen>
                                 );
                                 return;
                               }
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Produtor cadastrado ($_tipoGerador)!',
-                                  ),
-                                ),
+
+                              final usuario = Usuario(
+                                nome: _nomeProdutor.text.trim(),
+                                email: _emailProdutor.text.trim(),
+                                senha: _senhaProdutor.text.trim(),
+                                tipo: 'Produtor',
                               );
+
+                              try {
+                                await UsuarioDao.inserirUsuario(usuario);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                        'Produtor cadastrado (${_tipoGerador})!'),
+                                  ),
+                                );
+                                Navigator.pop(context);
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Erro ao cadastrar: $e')),
+                                );
+                              }
                             },
                           ),
                         );
@@ -109,12 +129,28 @@ class _CadastroScreenState extends State<CadastroScreen>
                             show: _showColetor,
                             nomeCtrl: _nomeColetor,
                             areaCtrl: _areaColetor,
-                            onSubmit: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Coletor cadastrado!'),
-                                ),
+                            senhaCtrl: _senhaColetor, // 🆕
+                            onSubmit: () async {
+                              final usuario = Usuario(
+                                nome: _nomeColetor.text.trim(),
+                                email: _areaColetor.text
+                                    .trim(), // ⚠️ aqui não há campo de email no coletor, usei área apenas pra não dar erro (podemos ajustar depois)
+                                senha: _senhaColetor.text.trim(),
+                                tipo: 'Coletor',
                               );
+
+                              try {
+                                await UsuarioDao.inserirUsuario(usuario);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Coletor cadastrado!')),
+                                );
+                                Navigator.pop(context);
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Erro ao cadastrar: $e')),
+                                );
+                              }
                             },
                           ),
                         );
@@ -145,9 +181,9 @@ class _CadastroScreenState extends State<CadastroScreen>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
+                        const Text(
                           'Já tem conta?',
-                          style: const TextStyle(color: Color(0xFF000000)),
+                          style: TextStyle(color: Color(0xFF000000)),
                         ),
                         TextButton(
                           onPressed: () =>
@@ -230,6 +266,7 @@ class _ProdutorForm extends StatelessWidget {
     required this.show,
     required this.nomeCtrl,
     required this.emailCtrl,
+    required this.senhaCtrl, // 🆕
     required this.tipos,
     required this.selectedTipo,
     required this.onChangedTipo,
@@ -239,6 +276,7 @@ class _ProdutorForm extends StatelessWidget {
   final bool show;
   final TextEditingController nomeCtrl;
   final TextEditingController emailCtrl;
+  final TextEditingController senhaCtrl; // 🆕
 
   final List<String> tipos;
   final String? selectedTipo;
@@ -265,7 +303,6 @@ class _ProdutorForm extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-
           DropdownButtonFormField<String>(
             value: safeValue,
             items: tipos
@@ -280,7 +317,6 @@ class _ProdutorForm extends StatelessWidget {
             validator: (v) => v == null ? 'Selecione um tipo' : null,
           ),
           const SizedBox(height: 10),
-
           TextFormField(
             controller: emailCtrl,
             keyboardType: TextInputType.emailAddress,
@@ -290,8 +326,18 @@ class _ProdutorForm extends StatelessWidget {
               isDense: true,
             ),
           ),
+          const SizedBox(height: 10),
+          TextFormField(
+            controller: senhaCtrl,
+            decoration: const InputDecoration(
+              labelText: 'Senha',
+              prefixIcon: Icon(Icons.lock),
+              border: OutlineInputBorder(),
+              isDense: true,
+            ),
+            obscureText: true,
+          ),
           const SizedBox(height: 12),
-
           FilledButton(
             onPressed: onSubmit,
             style: FilledButton.styleFrom(
@@ -311,12 +357,14 @@ class _ColetorForm extends StatelessWidget {
     required this.show,
     required this.nomeCtrl,
     required this.areaCtrl,
+    required this.senhaCtrl, // 🆕
     required this.onSubmit,
   });
 
   final bool show;
   final TextEditingController nomeCtrl;
   final TextEditingController areaCtrl;
+  final TextEditingController senhaCtrl; // 🆕
   final VoidCallback onSubmit;
 
   @override
@@ -343,6 +391,17 @@ class _ColetorForm extends StatelessWidget {
               border: OutlineInputBorder(),
               isDense: true,
             ),
+          ),
+          const SizedBox(height: 10),
+          TextFormField(
+            controller: senhaCtrl,
+            decoration: const InputDecoration(
+              labelText: 'Senha',
+              prefixIcon: Icon(Icons.lock),
+              border: OutlineInputBorder(),
+              isDense: true,
+            ),
+            obscureText: true,
           ),
           const SizedBox(height: 12),
           FilledButton(
