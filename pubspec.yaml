@@ -9,13 +9,15 @@ environment:
   sdk: '>=3.9.0 <4.0.0'
 
 dependencies:
-  google_fonts: ^6.2.0
   flutter:
     sdk: flutter
+
+  google_fonts: ^6.2.0
+  google_maps_flutter: ^2.7.0
+  geolocator: ^14.0.2
   shared_preferences: ^2.2.2
   flutter_map: ^6.0.1
   latlong2: ^0.9.0
-  geolocator: ^14.0.2
   flutter_svg: ^2.0.9
   lottie: ^2.7.0
   fl_chart: ^0.66.1
@@ -29,6 +31,4 @@ dev_dependencies:
     sdk: flutter
 
 flutter:
-  uses-material-design: true
-  assets:
-    - lib/assets/app_logo.png
+

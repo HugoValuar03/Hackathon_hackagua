@@ -35,7 +35,9 @@ class BioCycleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BioCycle',
+
+
+    title: 'BioCycle',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         snackBarTheme: SnackBarThemeData(
@@ -55,6 +57,8 @@ class BioCycleApp extends StatelessWidget {
         '/onboarding': (context) => const OnboardingScreen(),
         '/login': (context) => const LoginScreen(),
         '/cadastro': (context) => const CadastroScreen(),
+
+
 
         // ==== PRODUTOR ====
         '/produtor/beneficios': (context) => const ProdutorBeneficiosScreen(),
