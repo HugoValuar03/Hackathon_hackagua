@@ -19,7 +19,6 @@ class _ProdutorPerfilScreenState extends State<ProdutorPerfilScreen> {
     super.initState();
     _carregarUsuario();
   }
-
   Future<void> _carregarUsuario() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
