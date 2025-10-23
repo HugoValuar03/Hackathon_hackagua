@@ -14,7 +14,7 @@ class ColetorAppBottomNav extends StatelessWidget {
   static const routes = <String>[
     '/coletor/marketplace',
     '/coletor/mapa',
-    '/coletor/beneficios',
+    '/produtor/beneficios',
     '/coletor/perfil',
   ];
 

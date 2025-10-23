@@ -178,9 +178,9 @@ class _LoginScreenState extends State<LoginScreen> {
         );
 
         if (usuario.tipo == 'Produtor') {
-          Navigator.pushReplacementNamed(context, '/produtor/perfil');
+          Navigator.pushReplacementNamed(context, '/produtor/marketplace');
         } else if (usuario.tipo == 'Coletor') {
-          Navigator.pushReplacementNamed(context, '/coletor/perfil');
+          Navigator.pushReplacementNamed(context, '/coletor/marketplace');
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

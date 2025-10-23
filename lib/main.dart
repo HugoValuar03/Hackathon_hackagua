@@ -85,6 +85,7 @@ class BioCycleApp extends StatelessWidget {
         '/coletor/dashboard': (context) => const ColetorDashboard(),
         '/coletor/marketplace': (context) => const ColetorMarketplaceScreen(),
         '/coletor/perfil': (context) => const ColetorPerfilScreen(),
+        '/coletor/mapa': (context) => const MapsScreen(),
       },
 
       onUnknownRoute: (settings) {
