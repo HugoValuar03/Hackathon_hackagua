@@ -5,9 +5,6 @@ import '../models.dart';
 class DBHelper {
   static Database? _db;
 
-  static const _dbName = 'biocycle.db';
-  static const _dbVersion = 1;
-
   static Future<Database> get database async {
     if (_db != null) return _db!;
     _db = await _initDB();
@@ -16,13 +13,17 @@ class DBHelper {
 
   static Future<Database> _initDB() async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, _dbName);
+    final path = join(dbPath, 'biocycle.db');
 
+    // 🔁 Sempre recria o banco ao iniciar o app
+    await deleteDatabase(path);
+
+    // 🔧 Criação do novo banco
     return await openDatabase(
       path,
-      version: _dbVersion,
+      version: 1,
       onCreate: (db, version) async {
-        // Tabela de produtos
+        // 🧱 Tabela de produtos
         await db.execute('''
           CREATE TABLE produtos(
             id TEXT PRIMARY KEY,
@@ -34,9 +35,9 @@ class DBHelper {
           )
         ''');
 
-        // Tabela de usuários
+        // 🧱 Tabela de usuários
         await db.execute('''
-          CREATE TABLE usuarios(
+          CREATE TABLE usuarios (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nome TEXT,
             email TEXT UNIQUE,
@@ -44,10 +45,29 @@ class DBHelper {
             tipo TEXT
           )
         ''');
+
+        final usuariosIniciais = [
+          {'nome': 'Eco Restaurante', 'email': 'eco@restaurante.com', 'senha': '123456', 'tipo': 'Produtor'},
+          {'nome': 'Verde Escola', 'email': 'verde@escola.com', 'senha': '123456', 'tipo': 'Produtor'},
+          {'nome': 'AgroVida', 'email': 'agrovida@bio.com', 'senha': '123456', 'tipo': 'Produtor'},
+          {'nome': 'Natureza Viva', 'email': 'natureza@viva.com', 'senha': '123456', 'tipo': 'Produtor'},
+          {'nome': 'BioSabor', 'email': 'biosabor@comida.com', 'senha': '123456', 'tipo': 'Produtor'},
+
+          {'nome': 'EcoColeta', 'email': 'eco@coleta.com', 'senha': '123456', 'tipo': 'Coletor'},
+          {'nome': 'ReciclaMais', 'email': 'recicla@mais.com', 'senha': '123456', 'tipo': 'Coletor'},
+          {'nome': 'BioTrans', 'email': 'biotrans@eco.com', 'senha': '123456', 'tipo': 'Coletor'},
+          {'nome': 'VerdeLog', 'email': 'verdelog@coleta.com', 'senha': '123456', 'tipo': 'Coletor'},
+          {'nome': 'CleanWaste', 'email': 'clean@waste.com', 'senha': '123456', 'tipo': 'Coletor'},
+        ];
+
+        for (var u in usuariosIniciais) {
+          await db.insert('usuarios', u);
+        }
       },
     );
   }
 
+  // 🧩 CRUD de produtos (mantido igual ao original)
   static Future<void> insertProduto(Produto produto) async {
     final db = await database;
     await db.insert(
@@ -68,12 +88,12 @@ class DBHelper {
     await db.delete('produtos');
   }
 
-  // 🧪 Teste rápido de depuração
+  // 🧪 Utilitário opcional: listar usuários no console
   static Future<void> printUsuarios() async {
     final db = await database;
-    final result = await db.query('usuarios');
-    for (final row in result) {
-      print('👤 Usuário: ${row['nome']} | Email: ${row['email']} | Tipo: ${row['tipo']}');
+    final users = await db.query('usuarios');
+    for (var u in users) {
+      print('👤 ${u['nome']} (${u['email']}) - ${u['tipo']}');
     }
   }
 }
