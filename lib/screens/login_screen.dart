@@ -43,20 +43,19 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const SizedBox(height: 20),
-                        Image.asset('lib/assets/app_logo.png', width: 300),
+                        Image.asset('lib/assets/app_logo.png', width: 260),
                         const SizedBox(height: 8),
                         const Text(
-                          'Entrar',
+                          'Realizar Login',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 25,
                             fontWeight: FontWeight.w600,
                             letterSpacing: 0.5,
                           ),
                         ),
                         const SizedBox(height: 28),
 
-                        // FORM
                         Form(
                           key: _formKey,
                           autovalidateMode: AutovalidateMode.disabled,
@@ -222,7 +221,6 @@ class _BottomAccent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme;
     return Align(
       alignment: Alignment.bottomCenter,
       child: IgnorePointer(
@@ -242,20 +240,12 @@ class _TopBackdrop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme;
     return Align(
       alignment: Alignment.topCenter,
       child: IgnorePointer(
         ignoring: true,
         child: Container(
           height: MediaQuery.of(context).size.height * 0.38,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [color.primary.withOpacity(.10), Colors.transparent],
-            ),
-          ),
         ),
       ),
     );
