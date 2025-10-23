@@ -58,8 +58,18 @@ class _CadastroScreenState extends State<CadastroScreen>
                 ),
                 child: Column(
                   children: [
-                    Image.asset('lib/assets/app_logo.png', width: 180),
-                    const SizedBox(height: 18),
+                    Image.asset('lib/assets/app_logo.png', width: 260),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Cadastrar-se',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 28),
 
                     LayoutBuilder(
                       builder: (context, c) {
@@ -81,40 +91,46 @@ class _CadastroScreenState extends State<CadastroScreen>
                             selectedTipo: _tipoGerador,
                             onChangedTipo: (v) =>
                                 setState(() => _tipoGerador = v),
-                            onSubmit: () async {
-                              if (_tipoGerador == null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Selecione o tipo do produtor',
-                                    ),
-                                  ),
+                              onSubmit: () async {
+                                if (_tipoGerador == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Selecione o tipo do produtor')),
+                                  );
+                                  return;
+                                }
+
+                                final usuario = Usuario(
+                                  nome: _nomeProdutor.text.trim(),
+                                  email: _emailProdutor.text.trim(),
+                                  senha: _senhaProdutor.text.trim(),
+                                  tipo: 'Produtor',
                                 );
-                                return;
+
+                                // Opcional: capture referências antes do await
+                                final messenger = ScaffoldMessenger.of(context);
+                                final navigator = Navigator.of(context);
+
+                                try {
+                                  await UsuarioDao.inserirUsuario(usuario);
+
+                                  if (!mounted) return;
+                                  messenger.showSnackBar(
+                                    SnackBar(content: Text('Produtor cadastrado (${_tipoGerador})!')),
+                                  );
+
+                                  if (navigator.canPop()) {
+                                    navigator.pop();
+                                  } else {
+                                    navigator.pushReplacementNamed('/cadastro');
+                                  }
+                                } catch (e) {
+                                  if (!mounted) return;
+                                  messenger.showSnackBar(
+                                    SnackBar(content: Text('Erro ao cadastrar: $e')),
+                                  );
+                                }
                               }
 
-                              final usuario = Usuario(
-                                nome: _nomeProdutor.text.trim(),
-                                email: _emailProdutor.text.trim(),
-                                senha: _senhaProdutor.text.trim(),
-                                tipo: 'Produtor',
-                              );
-
-                              try {
-                                await UsuarioDao.inserirUsuario(usuario);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                        'Produtor cadastrado (${_tipoGerador})!'),
-                                  ),
-                                );
-                                Navigator.pop(context);
-                              } catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Erro ao cadastrar: $e')),
-                                );
-                              }
-                            },
                           ),
                         );
 
@@ -130,28 +146,38 @@ class _CadastroScreenState extends State<CadastroScreen>
                             nomeCtrl: _nomeColetor,
                             areaCtrl: _areaColetor,
                             senhaCtrl: _senhaColetor, // 🆕
-                            onSubmit: () async {
-                              final usuario = Usuario(
-                                nome: _nomeColetor.text.trim(),
-                                email: _areaColetor.text
-                                    .trim(), // ⚠️ aqui não há campo de email no coletor, usei área apenas pra não dar erro (podemos ajustar depois)
-                                senha: _senhaColetor.text.trim(),
-                                tipo: 'Coletor',
-                              );
+                              onSubmit: () async {
+                                final usuario = Usuario(
+                                  nome: _nomeColetor.text.trim(),
+                                  email: _areaColetor.text.trim(), // ⚠️ ideal ter um campo de e-mail real
+                                  senha: _senhaColetor.text.trim(),
+                                  tipo: 'Coletor',
+                                );
 
-                              try {
-                                await UsuarioDao.inserirUsuario(usuario);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('Coletor cadastrado!')),
-                                );
-                                Navigator.pop(context);
-                              } catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Erro ao cadastrar: $e')),
-                                );
+                                final messenger = ScaffoldMessenger.of(context);
+                                final navigator = Navigator.of(context);
+
+                                try {
+                                  await UsuarioDao.inserirUsuario(usuario);
+
+                                  if (!mounted) return;
+                                  messenger.showSnackBar(
+                                    const SnackBar(content: Text('Coletor cadastrado!')),
+                                  );
+
+                                  // <<< AQUI entra a navegação >>>
+                                  if (navigator.canPop()) {
+                                    navigator.pop();
+                                  } else {
+                                    navigator.pushReplacementNamed('/login'); // ou '/marketplace'
+                                  }
+                                } catch (e) {
+                                  if (!mounted) return;
+                                  messenger.showSnackBar(
+                                    SnackBar(content: Text('Erro ao cadastrar: $e')),
+                                  );
+                                }
                               }
-                            },
                           ),
                         );
 
