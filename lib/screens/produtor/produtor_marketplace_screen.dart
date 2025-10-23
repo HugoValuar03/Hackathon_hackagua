@@ -7,12 +7,12 @@ import '../../main.dart';
 import '../../models.dart';
 import '../../widgets/scaffold_with_nav.dart';
 
-/// Mapeamento fixo: categoria -> imagem do assets/
-const kAssetPorCategoria = <String, String>{
-  'composto': 'assets/substrato.jpeg',
-  'sementes': 'assets/images.jpeg',
-  'credito':  'assets/biogas.jpg',
-};
+// Ordem de imagens que vão aparecer nos cards (cíclico)
+const kAssetsDeCards = <String>[
+  'assets/equipamentos-acessorios-biogas-brasil.jpg',
+  'assets/images-litros.jpeg',
+  'assets/images-litros-2.jpeg',
+];
 const kAssetDefault = 'assets/biogas.jpg';
 
 class ProdutorMarketplaceScreen extends StatefulWidget {
@@ -25,14 +25,7 @@ class ProdutorMarketplaceScreen extends StatefulWidget {
 
 class _ProdutorMarketplaceScreenState extends State<ProdutorMarketplaceScreen> {
   static const _tabIndex = 0;
-  String _filtroCategoria = 'todos';
 
-  // ---------- Preço em R$ + faixas de desconto ----------
-  // Regras:
-  // 30–64,99  => 35%
-  // 65–90     => 40%
-  // >90       => 45%
-  // <30       => 0%
   double _discountRateForPrice(double priceBRL) {
     if (priceBRL >= 30 && priceBRL < 65) return 0.35;
     if (priceBRL >= 65 && priceBRL <= 90) return 0.40;
@@ -45,65 +38,39 @@ class _ProdutorMarketplaceScreenState extends State<ProdutorMarketplaceScreen> {
     return 'R\$ ${s.replaceAll('.', ',')}';
   }
 
-  /// Retorna o caminho do asset para o produto (por categoria)
-  String _assetPara(Produto p) {
-    return kAssetPorCategoria[p.categoria] ?? kAssetDefault;
-  }
-
   @override
   Widget build(BuildContext context) {
-    final produtosFiltrados = _filtroCategoria == 'todos'
-        ? AppState.produtos
-        : AppState.produtos
-        .where((p) => p.categoria == _filtroCategoria)
-        .toList();
+    final produtos = AppState.produtos;
 
     return ScaffoldWithNav(
-      title: 'Marketplace Verde',
+      title: 'Ecossistema Comercial',
       currentIndex: _tabIndex,
       role: UserRole.produtor,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 12),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: DropdownButtonFormField<String>(
-              value: _filtroCategoria,
-              decoration: const InputDecoration(
-                labelText: 'Filtrar por categoria',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              ),
-              items: const [
-                DropdownMenuItem(value: 'todos', child: Text('Todas as Categorias')),
-                DropdownMenuItem(value: 'composto', child: Text('Composto')),
-                DropdownMenuItem(value: 'sementes', child: Text('Sementes')),
-                DropdownMenuItem(value: 'credito', child: Text('Créditos')),
-              ],
-              onChanged: (v) => setState(() => _filtroCategoria = v!),
-            ),
-          ),
           const SizedBox(height: 8),
 
-          // Lista estilo OLX
           Expanded(
             child: ListView.builder(
-              itemCount: produtosFiltrados.length,
+              itemCount: produtos.length,
               itemBuilder: (context, index) {
-                final produto = produtosFiltrados[index];
+                final produto = produtos[index];
 
-                // Usaremos "precoPontos" como valor em R$ agora.
                 final double precoBase = produto.precoPontos.toDouble();
                 final double rate = _discountRateForPrice(precoBase);
                 final double precoFinal = precoBase * (1 - rate);
+
+                final imagemAsset = (kAssetsDeCards.isEmpty)
+                    ? kAssetDefault
+                    : kAssetsDeCards[index % kAssetsDeCards.length];
 
                 return _ProdutoOlxCard(
                   produto: produto,
                   descontoPercent: rate,
                   precoBaseReais: precoBase,
                   precoFinalReais: precoFinal,
-                  imagemAsset: _assetPara(produto), // sempre asset
+                  imagemAsset: imagemAsset,
                   onComprar: () => _comprarProduto(produto, precoFinal),
                   formatBRL: _formatBRL,
                 );
@@ -113,7 +80,6 @@ class _ProdutorMarketplaceScreenState extends State<ProdutorMarketplaceScreen> {
         ],
       ),
 
-      // Botão flutuante: novo post
       floatingActionButton: FloatingActionButton(
         onPressed: _novoPost,
         child: const Icon(Icons.add),
@@ -150,7 +116,6 @@ class _ProdutorMarketplaceScreenState extends State<ProdutorMarketplaceScreen> {
     );
   }
 
-  // Agora é só informativo (não mexe em pontos), preço em R$
   void _comprarProduto(Produto produto, double precoFinal) {
     final precoFmt = _formatBRL(precoFinal);
     ScaffoldMessenger.of(context).showSnackBar(
@@ -159,7 +124,6 @@ class _ProdutorMarketplaceScreenState extends State<ProdutorMarketplaceScreen> {
   }
 }
 
-/// Card estilo OLX (carrega SEMPRE imagem de assets, preço em R$)
 class _ProdutoOlxCard extends StatelessWidget {
   const _ProdutoOlxCard({
     required this.produto,
@@ -173,10 +137,10 @@ class _ProdutoOlxCard extends StatelessWidget {
   });
 
   final Produto produto;
-  final double descontoPercent;   // 0.0, 0.35, 0.40, 0.45
+  final double descontoPercent;
   final double precoBaseReais;
   final double precoFinalReais;
-  final String imagemAsset;       // caminho em assets/
+  final String imagemAsset;
   final String Function(num) formatBRL;
   final VoidCallback? onTap;
   final VoidCallback? onComprar;
@@ -207,7 +171,6 @@ class _ProdutoOlxCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // IMAGEM DO ASSET
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Image.asset(
@@ -235,7 +198,6 @@ class _ProdutoOlxCard extends StatelessWidget {
             ),
             const SizedBox(height: 6),
 
-            // Preço com/sem desconto (em R$)
             if (temDesconto) ...[
               Row(
                 children: [
@@ -260,7 +222,9 @@ class _ProdutoOlxCard extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     visualDensity: VisualDensity.compact,
                     side: BorderSide.none,
-                    backgroundColor: theme.colorScheme.primary.withOpacity(0.12),
+                    backgroundColor: theme.colorScheme.primary.withOpacity(
+                      0.12,
+                    ),
                   ),
                 ],
               ),
@@ -300,9 +264,9 @@ class _ProdutoOlxCard extends StatelessWidget {
   }
 }
 
-// ===== Bottom sheet de "Novo post" (mantido; preview opcional) =====
 class _NovoPostSheet extends StatefulWidget {
   const _NovoPostSheet({this.scrollController});
+
   final ScrollController? scrollController;
 
   @override
@@ -371,7 +335,11 @@ class _NovoPostSheetState extends State<_NovoPostSheet> {
           OutlinedButton.icon(
             onPressed: _pickImage,
             icon: const Icon(Icons.image),
-            label: Text(_imageName == null ? 'Selecionar imagem (preview opcional)' : 'Trocar imagem'),
+            label: Text(
+              _imageName == null
+                  ? 'Selecionar imagem (preview opcional)'
+                  : 'Trocar imagem',
+            ),
           ),
           const SizedBox(height: 10),
 
@@ -383,8 +351,16 @@ class _NovoPostSheetState extends State<_NovoPostSheet> {
               color: Colors.grey.shade100,
               alignment: Alignment.center,
               child: _imageBytes == null
-                  ? const Text('Preview da imagem', style: TextStyle(color: Colors.black54))
-                  : Image.memory(_imageBytes!, height: previewHeight, width: double.infinity, fit: BoxFit.cover),
+                  ? const Text(
+                      'Preview da imagem',
+                      style: TextStyle(color: Colors.black54),
+                    )
+                  : Image.memory(
+                      _imageBytes!,
+                      height: previewHeight,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
             ),
           ),
 
@@ -424,9 +400,9 @@ class _NovoPostSheetState extends State<_NovoPostSheet> {
             child: FilledButton(
               onPressed: () {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Post criado!')),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('Post criado!')));
               },
               child: const Text('Publicar'),
             ),

@@ -97,7 +97,6 @@ class Coleta {
 class Produto {
   final String id;
   final String nome;
-  final String categoria;
   final String descricao;
   final int precoPontos;
   final String imagemUrl;
@@ -105,7 +104,6 @@ class Produto {
   Produto({
     required this.id,
     required this.nome,
-    required this.categoria,
     required this.descricao,
     required this.precoPontos,
     required this.imagemUrl,
@@ -114,7 +112,6 @@ class Produto {
   Map<String, dynamic> toJson() => {
     'id': id,
     'nome': nome,
-    'categoria': categoria,
     'descricao': descricao,
     'precoPontos': precoPontos,
     'imagemUrl': imagemUrl,
@@ -123,7 +120,6 @@ class Produto {
   factory Produto.fromJson(Map<String, dynamic> json) => Produto(
     id: json['id'],
     nome: json['nome'],
-    categoria: json['categoria'],
     descricao: json['descricao'],
     precoPontos: json['precoPontos'],
     imagemUrl: json['imagemUrl'],

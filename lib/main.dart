@@ -108,68 +108,101 @@ class AppState {
   static List<Produto> produtos = [];
   static int pontos = 0;
 
-  static Future<void> loadData() async {
+  // bump aqui para refazer seed quando mudar a lista
+  static const int _dataVersion = 2;
+
+  static Future<void> loadData({bool forceSeed = false}) async {
     final prefs = await SharedPreferences.getInstance();
 
     final g = prefs.getString('geradores');
     final c = prefs.getString('coletores');
     final co = prefs.getString('coletas');
-
-    if (g != null) {
-      geradores = (jsonDecode(g) as List).map((e) => Gerador.fromJson(e)).toList();
-    }
-    if (c != null) {
-      coletores = (jsonDecode(c) as List).map((e) => Coletor.fromJson(e)).toList();
-    }
-    if (co != null) {
-      coletas = (jsonDecode(co) as List).map((e) => Coleta.fromJson(e)).toList();
-    }
-
+    if (g != null) geradores = (jsonDecode(g) as List).map((e) => Gerador.fromJson(e)).toList();
+    if (c != null) coletores = (jsonDecode(c) as List).map((e) => Coletor.fromJson(e)).toList();
+    if (co != null) coletas = (jsonDecode(co) as List).map((e) => Coleta.fromJson(e)).toList();
     pontos = prefs.getInt('pontos') ?? 0;
 
-    // ==== SQLite: produtos ====
+    final storedVersion = prefs.getInt('data_version') ?? 0;
+
+    if (forceSeed || storedVersion < _dataVersion) {
+      await _seedProdutos(reset: true);
+      await prefs.setInt('data_version', _dataVersion);
+    }
+
     produtos = await DBHelper.getProdutos();
 
     if (produtos.isEmpty) {
-      produtos = [
-        Produto(
-          id: 'p1',
-          nome: 'Composto Orgânico 5kg',
-          categoria: 'composto',
-          descricao: 'Composto rico em nutrientes para plantas.',
-          precoPontos: 50,
-          imagemUrl: 'assets/images/composto.png',
-        ),
-        Produto(
-          id: 'p2',
-          nome: 'Sementes de Hortaliças',
-          categoria: 'sementes',
-          descricao: 'Pacote com sementes variadas.',
-          precoPontos: 30,
-          imagemUrl: 'assets/images/sementes.png',
-        ),
-        Produto(
-          id: 'p3',
-          nome: 'Crédito Verde (1kg CO₂)',
-          categoria: 'credito',
-          descricao: 'Reduza sua pegada de carbono.',
-          precoPontos: 20,
-          imagemUrl: 'assets/images/credito.png',
-        ),
-      ];
-
-      for (var p in produtos) {
-        await DBHelper.insertProduto(p);
-      }
+      await _seedProdutos(reset: false);
+      produtos = await DBHelper.getProdutos();
     }
   }
 
   static Future<void> saveData() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs
-      ..setString('geradores', jsonEncode(geradores.map((e) => e.toJson()).toList()))
-      ..setString('coletores', jsonEncode(coletores.map((e) => e.toJson()).toList()))
-      ..setString('coletas', jsonEncode(coletas.map((e) => e.toJson()).toList()))
-      ..setInt('pontos', pontos);
+    await prefs.setString('geradores', jsonEncode(geradores.map((e) => e.toJson()).toList()));
+    await prefs.setString('coletores', jsonEncode(coletores.map((e) => e.toJson()).toList()));
+    await prefs.setString('coletas', jsonEncode(coletas.map((e) => e.toJson()).toList()));
+    await prefs.setInt('pontos', pontos);
+  }
+
+  // chame isto manualmente caso queira um botão "Resetar catálogo"
+  static Future<void> resetarProdutosComSeed() async {
+    await _seedProdutos(reset: true);
+    produtos = await DBHelper.getProdutos();
+  }
+
+  static Future<void> _seedProdutos({required bool reset}) async {
+    debugPrint('[SEED] _seedProdutos(reset: $reset) chamado');
+    if (reset) await DBHelper.clearProdutos();
+
+    final seed = <Produto>[
+      Produto(
+        id: 'p0',
+        nome: 'Queimador de Biogás (Fogareiro)',
+        descricao: 'Queimador ajustável para uso culinário com biogás.',
+        precoPontos: 25,
+        imagemUrl: 'assets/equipamentos-acessorios-biogas-brasil.jpg',
+      ),
+      Produto(
+        id: 'p4',
+        nome: 'Medidor de Vazão para Biogás',
+        descricao: 'Rotâmetro para monitoramento de vazão no sistema.',
+        precoPontos: 35,
+        imagemUrl: 'assets/images-litros.jpeg',
+      ),
+      Produto(
+        id: 'p5',
+        nome: 'Armazenador de Biogás (Gas Bag 1m³)',
+        descricao: 'Bolsa flexível para armazenamento temporário de biogás.',
+        precoPontos: 45,
+        imagemUrl: 'assets/images-litros-2.jpeg',
+      ),
+      Produto(
+        id: 'p1',
+        nome: 'Biodigestor Residencial (80L)',
+        descricao: 'Biodigestor compacto para produção de biogás doméstico.',
+        precoPontos: 50,
+        imagemUrl: 'assets/equipamentos-acessorios-biogas-brasil.jpg',
+      ),
+      Produto(
+        id: 'p2',
+        nome: 'Kit de Tubulações e Válvulas para Biogás',
+        descricao: 'Mangueiras, conexões e válvulas para linha de gás.',
+        precoPontos: 30,
+        imagemUrl: 'assets/images-litros.jpeg',
+      ),
+      Produto(
+        id: 'p3',
+        nome: 'Filtro de H₂S (Scrubber) para Biogás',
+        descricao: 'Mídia filtrante para remoção de sulfeto de hidrogênio.',
+        precoPontos: 20,
+        imagemUrl: 'assets/images-litros-2.jpeg',
+      ),
+    ];
+
+    for (final p in seed) {
+      await DBHelper.insertProduto(p);
+    }
   }
 }
+

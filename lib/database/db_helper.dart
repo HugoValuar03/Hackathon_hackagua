@@ -15,7 +15,7 @@ class DBHelper {
   }
 
   static Future<Database> _initDB() async {
-    final dbPath = await getDatabasesPath(); // Funciona para mobile e desktop agora
+    final dbPath = await getDatabasesPath();
     final path = join(dbPath, _dbName);
 
     return await openDatabase(
@@ -46,18 +46,32 @@ class DBHelper {
     );
   }
 
+  // === PRODUTOS ===
   static Future<void> insertProduto(Produto produto) async {
     final db = await database;
     await db.insert(
       'produtos',
       produto.toJson(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
+      conflictAlgorithm: ConflictAlgorithm.replace, // upsert por id
     );
+  }
+
+  static Future<void> insertManyProdutos(List<Produto> list) async {
+    final db = await database;
+    await db.transaction((txn) async {
+      for (final p in list) {
+        await txn.insert(
+          'produtos',
+          p.toJson(),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+    });
   }
 
   static Future<List<Produto>> getProdutos() async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('produtos');
+    final maps = await db.query('produtos', orderBy: 'nome ASC');
     return List.generate(maps.length, (i) => Produto.fromJson(maps[i]));
   }
 
@@ -66,10 +80,15 @@ class DBHelper {
     await db.delete('produtos');
   }
 
+  // Alias para combinar com o código que chama "clearProdutos()"
+  static Future<void> clearProdutos() => deleteAllProdutos();
+
+  // === USUÁRIOS ===
   static Future<void> printUsuarios() async {
     final db = await database;
     final result = await db.query('usuarios');
     for (final row in result) {
+      // ignore: avoid_print
       print('👤 Usuário: ${row['nome']} | Email: ${row['email']} | Tipo: ${row['tipo']}');
     }
   }

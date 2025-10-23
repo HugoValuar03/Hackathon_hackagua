@@ -21,14 +21,9 @@ class _ColetorMarketplaceScreenState extends State<ColetorMarketplaceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final produtosFiltrados = _filtroCategoria == 'todos'
-        ? AppState.produtos
-        : AppState.produtos
-        .where((p) => p.categoria == _filtroCategoria)
-        .toList();
 
     return ScaffoldWithNav(
-      title: 'Marketplace Verde',
+      title: 'Ecossistema Comercial',
       currentIndex: _tabIndex,
       role: UserRole.coletor,
       body: Column(
@@ -56,24 +51,9 @@ class _ColetorMarketplaceScreenState extends State<ColetorMarketplaceScreen> {
             ),
           ),
           const SizedBox(height: 8),
-
-          // Lista estilo OLX
-          Expanded(
-            child: ListView.builder(
-              itemCount: produtosFiltrados.length,
-              itemBuilder: (context, index) {
-                final produto = produtosFiltrados[index];
-                return _ProdutoOlxCard(
-                  produto: produto,
-                  onComprar: () => _comprarProduto(produto),
-                );
-              },
-            ),
-          ),
         ],
       ),
 
-      // Botão flutuante: cria novo post
       floatingActionButton: FloatingActionButton(
         onPressed: _novoPost,
         child: const Icon(Icons.add),

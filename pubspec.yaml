@@ -13,6 +13,7 @@ dependencies:
   image_picker: ^1.0.7
   flutter:
     sdk: flutter
+  video_player: ^2.9.2
 
 
   sqflite: ^2.2.8+4
@@ -47,7 +48,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/app_logo.png
-    - assets/biogas.jpg
-    - assets/images.jpeg
-    - assets/substrato.jpeg
+    - assets/equipamentos-acessorios-biogas-brasil.jpg
+    - assets/images-litros.jpeg
+    - assets/images-litros-2.jpeg
 

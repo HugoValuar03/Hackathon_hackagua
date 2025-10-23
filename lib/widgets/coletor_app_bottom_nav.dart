@@ -36,7 +36,7 @@ class ColetorAppBottomNav extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(Icons.storefront_outlined),
           activeIcon: Icon(Icons.storefront),
-          label: 'Market',
+          label: 'Comercial',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.map_outlined),

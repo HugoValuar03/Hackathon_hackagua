@@ -32,7 +32,6 @@ class _ColetorPerfilScreenState extends State<ColetorPerfilScreen> {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
