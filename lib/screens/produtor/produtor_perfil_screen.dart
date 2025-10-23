@@ -1,235 +1,276 @@
 import 'package:flutter/material.dart';
-import 'package:hackathon_hackagua/widgets/scaffold_with_nav.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../main.dart';
-
-class ProdutorPerfilScreen extends StatelessWidget {
+class ProdutorPerfilScreen extends StatefulWidget {
   const ProdutorPerfilScreen({super.key});
 
-  static const _tabIndex = 3;
+  @override
+  State<ProdutorPerfilScreen> createState() => _ProdutorPerfilScreenState();
+}
+
+class _ProdutorPerfilScreenState extends State<ProdutorPerfilScreen> {
+  String nome = '';
+  String email = '';
+  String tipo = '';
+  String? fotoPerfil;
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarUsuario();
+  }
+
+  Future<void> _carregarUsuario() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      nome = prefs.getString('user_nome') ?? 'Nome do Estabelecimento';
+      email = prefs.getString('user_email') ?? 'email@exemplo.com';
+      tipo = prefs.getString('user_tipo') ?? 'Produtor';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWithNav(
-      title: 'Perfil Produtor',
-      currentIndex: _tabIndex,
-      role: UserRole.produtor,
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 16.0),
-        children: [
-          // Cabeçalho
-          Row(
-            children: [
-              const CircleAvatar(
-                radius: 36,
-                child: Icon(Icons.person, size: 36),
+    final color = Theme.of(context).colorScheme;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Perfil do Produtor',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+        backgroundColor: const Color(0xFF6CB40C),
+        elevation: 0,
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // ========================
+            // TOPO DO PERFIL (atualizado)
+            // ========================
+            Stack(
+              children: [
+                CircleAvatar(
+                  radius: 55,
+                  backgroundColor: const Color(0xFFDDEED2),
+                  backgroundImage:
+                  (fotoPerfil != null) ? AssetImage(fotoPerfil!) : null,
+                  child: fotoPerfil == null
+                      ? const Icon(Icons.person, size: 55, color: Colors.black45)
+                      : null,
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 4,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF2F4C30),
+                      shape: BoxShape.circle,
+                    ),
+                    padding: const EdgeInsets.all(6),
+                    child: const Icon(
+                      Icons.camera_alt_rounded,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              nome,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
-              const SizedBox(width: 12),
-              const Expanded(
+            ),
+            const SizedBox(height: 4),
+            Text(
+              email,
+              style: const TextStyle(
+                fontSize: 15,
+                color: Colors.grey,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              tipo,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF2F4C30),
+              ),
+            ),
+            const SizedBox(height: 30),
+
+            // ==============================================================
+            // RESTANTE DA TELA ORIGINAL DO PERFIL (mantido)
+            // ==============================================================
+            Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              elevation: 1,
+              child: Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: const [
                     Text(
-                      'Nome do Usuário',
+                      'Informações Gerais',
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF2F4C30),
                       ),
                     ),
+                    SizedBox(height: 8),
                     Text(
-                      'email@exemplo.com',
+                      'Gerencie suas informações de produtor, pontos acumulados e benefícios disponíveis.',
                       style: TextStyle(color: Colors.black54),
                     ),
                   ],
                 ),
               ),
-              FilledButton.icon(
-                onPressed: () {
-                  // TODO: implementar troca de foto
-                },
-                icon: const Icon(Icons.camera_alt),
-                label: const Text('Foto'),
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 20),
 
-          const SizedBox(height: 16),
-
-          // Pontos & Selos
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.stars),
-              title: Text('Pontos disponíveis: ${AppState.pontos}'),
-              trailing: TextButton(
-                onPressed: () => Navigator.pushNamed(context, '/beneficios'),
-                child: const Text('Ver selos'),
+            // Exemplo de seção de pontos
+            Card(
+              color: const Color(0xFF6CB40C),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14)),
+              elevation: 2,
+              child: Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                child: Column(
+                  children: const [
+                    Text(
+                      'Seus Pontos',
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 6),
+                    Text(
+                      '1200 pts',
+                      style: TextStyle(
+                          fontSize: 26,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Troque por benefícios no marketplace!',
+                      style: TextStyle(color: Colors.white70, fontSize: 14),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
+            const SizedBox(height: 25),
 
-          const SizedBox(height: 12),
-
-          // Mini-dashboard de impacto
-          Row(
-            children: const [
-              _ImpactoCard(titulo: 'Água (L)', valor: '12.5'),
-              SizedBox(width: 8),
-              _ImpactoCard(titulo: 'CO₂ (kg)', valor: '3.1'),
-              SizedBox(width: 8),
-              _ImpactoCard(titulo: 'Chorume (L)', valor: '5.0'),
-            ],
-          ),
-
-          const SizedBox(height: 12),
-
-          // Ações rápidas
-          GridView(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 1.6,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
-            ),
-            children: [
-              _ActionCard(
-                icon: Icons.local_shipping,
-                label: 'Solicitar coleta',
-                onTap: () => Navigator.pushNamed(context, '/solicitar-coleta'),
-              ),
-              _ActionCard(
-                icon: Icons.history,
-                label: 'Minhas coletas',
-                onTap: () => Navigator.pushNamed(context, '/coletas'),
-              ),
-              _ActionCard(
-                icon: Icons.map,
-                label: 'Endereço / Área',
-                onTap: () => Navigator.pushNamed(context, '/mapa'),
-              ),
-              _ActionCard(
-                icon: Icons.edit,
-                label: 'Editar dados',
-                onTap: () {
-                  // TODO: abrir formulário de edição
-                },
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 12),
-
-          // Preferências
-          Card(
-            child: Column(
+            // Botões de ação
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                SwitchListTile(
-                  value: true,
-                  onChanged: (v) {
-                    // TODO: salvar preferência
-                  },
-                  title: const Text('Notificações'),
-                  subtitle: const Text(
-                    'Receber atualizações das coletas e marketplace',
+                ElevatedButton.icon(
+                  onPressed: () =>
+                      Navigator.pushNamed(context, '/produtor/marketplace'),
+                  icon: const Icon(Icons.shopping_bag),
+                  label: const Text('Marketplace'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2F4C30),
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(140, 44),
                   ),
                 ),
-                const Divider(height: 0),
-                SwitchListTile(
-                  value: true,
-                  onChanged: (v) {
-                    // TODO: salvar preferência
-                  },
-                  title: const Text('Usar minha localização'),
-                  subtitle: const Text('Sugerir parceiros próximos'),
+                ElevatedButton.icon(
+                  onPressed: () =>
+                      Navigator.pushNamed(context, '/produtor/beneficios'),
+                  icon: const Icon(Icons.redeem_rounded),
+                  label: const Text('Benefícios'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF6CB40C),
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(140, 44),
+                  ),
                 ),
               ],
             ),
-          ),
+            const SizedBox(height: 25),
 
-          const SizedBox(height: 24),
-
-          // Sair
-          OutlinedButton(
-            onPressed: () => Navigator.pushReplacementNamed(context, '/login'),
-            child: const Text('Sair'),
-          ),
-
-          const SizedBox(height: 12),
-          const Center(
-            child: Text(
-              'BioCycle v0.1.0 • Suporte',
-              style: TextStyle(color: Colors.black54),
+            // Exemplo de seção de histórico
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Histórico de Coletas',
+                style: TextStyle(
+                    fontSize: 18,
+                    color: Color(0xFF2F4C30),
+                    fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ImpactoCard extends StatelessWidget {
-  const _ImpactoCard({required this.titulo, required this.valor});
-
-  final String titulo;
-  final String valor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-          child: Column(
-            children: [
-              Text(
-                valor,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
+            const SizedBox(height: 10),
+            ListView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: const [
+                ListTile(
+                  leading:
+                  Icon(Icons.recycling, color: Color(0xFF2F4C30), size: 28),
+                  title: Text('Coleta nº 1043'),
+                  subtitle: Text('10 de Outubro de 2025'),
+                  trailing: Text(
+                    '+50 pts',
+                    style: TextStyle(
+                      color: Color(0xFF6CB40C),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
+                ListTile(
+                  leading:
+                  Icon(Icons.recycling, color: Color(0xFF2F4C30), size: 28),
+                  title: Text('Coleta nº 1032'),
+                  subtitle: Text('28 de Setembro de 2025'),
+                  trailing: Text(
+                    '+80 pts',
+                    style: TextStyle(
+                      color: Color(0xFF6CB40C),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 25),
+
+            // Botão de logout
+            ElevatedButton.icon(
+              onPressed: () async {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.clear();
+                if (!mounted) return;
+                Navigator.pushReplacementNamed(context, '/login');
+              },
+              icon: const Icon(Icons.logout_rounded),
+              label: const Text('Sair'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent.shade700,
+                foregroundColor: Colors.white,
+                minimumSize: const Size(160, 48),
               ),
-              const SizedBox(height: 4),
-              Text(
-                titulo,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.black54),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ActionCard extends StatelessWidget {
-  const _ActionCard({required this.icon, required this.label, this.onTap});
-
-  final IconData icon;
-  final String label;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Ink(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Theme.of(context).colorScheme.surface,
-          border: Border.all(color: Colors.black12),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 28),
-              const SizedBox(height: 8),
-              Text(label, textAlign: TextAlign.center),
-            ],
-          ),
+            ),
+            const SizedBox(height: 30),
+          ],
         ),
       ),
     );

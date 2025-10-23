@@ -10,7 +10,6 @@ class ProdutorAppBottomNav extends StatelessWidget {
   final int currentIndex;
   final bool enabled;
 
-  /// Rotas em ordem do índice da barra (produtor).
   static const routes = <String>[
     '/produtor/marketplace',
     '/produtor/mapa',
