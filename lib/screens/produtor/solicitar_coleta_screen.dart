@@ -3,8 +3,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
-class SolicitarColetaScreen extends StatefulWidget {
-  const SolicitarColetaScreen({
+class ProdutorSolicitarColetaScreen extends StatefulWidget {
+  const ProdutorSolicitarColetaScreen({
     super.key,
     required this.geradores,
     required this.coletores,
@@ -14,10 +14,10 @@ class SolicitarColetaScreen extends StatefulWidget {
   final List<Map<String, dynamic>> coletores;
 
   @override
-  State<SolicitarColetaScreen> createState() => _SolicitarColetaScreenState();
+  State<ProdutorSolicitarColetaScreen> createState() => _ProdutorSolicitarColetaScreenState();
 }
 
-class _SolicitarColetaScreenState extends State<SolicitarColetaScreen> {
+class _ProdutorSolicitarColetaScreenState extends State<ProdutorSolicitarColetaScreen> {
   final _formKey = GlobalKey<FormState>();
   final _uuid = const Uuid();
 

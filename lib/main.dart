@@ -1,17 +1,20 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:hackathon_hackagua/screens/Produtor/marketplace_screen.dart';
+import 'package:hackathon_hackagua/screens/coletor/coletor_dashboard.dart';
+import 'package:hackathon_hackagua/screens/coletor/coletor_marketplace_screen.dart';
+import 'package:hackathon_hackagua/screens/coletor/coletor_perfil_screen.dart';
+import 'package:hackathon_hackagua/screens/produtor/produtor_beneficios_screen.dart';
+import 'package:hackathon_hackagua/screens/produtor/produtor_marketplace_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'database/db_helper.dart';
 import 'models.dart';
-import 'screens/Produtor/beneficios_screen.dart';
 import 'screens/auth/cadastro_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/onboarding_screen.dart';
+import 'screens/produtor/produtor_perfil_screen.dart';
 import 'screens/splash_screen.dart';
-import 'screens/Produtor/perfil_screen.dart';
 
 
 void main() {
@@ -36,9 +39,12 @@ class BioCycleApp extends StatelessWidget {
         '/onboarding': (context) => const OnboardingScreen(),
         '/login': (context) => const LoginScreen(),
         '/cadastro': (context) => const CadastroScreen(),
-        '/beneficios': (context) => const BeneficiosScreen(),
-        '/marketplace': (context) => const MarketplaceScreen(),
-        '/perfil': (context) => const PerfilScreen(),
+        '/produtor/beneficios': (context) => const ProdutorBeneficiosScreen(),
+        '/produtor/marketplace': (context) => const ProdutorMarketplaceScreen(),
+        '/produtor/perfil': (context) => const ProdutorPerfilScreen(),
+        '/coletor/dashboard': (context) => const ColetorDashboard(),
+        '/coletor/marketplace': (context) => const ColetorMarketplaceScreen(),
+        '/coletor/perfil': (context) => const ColetorPerfilScreen(),
       },
     );
   }

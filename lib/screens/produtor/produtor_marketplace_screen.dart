@@ -4,14 +4,14 @@ import '../../main.dart';
 import '../../models.dart';
 import '../../widgets/scaffold_with_nav.dart';
 
-class MarketplaceScreen extends StatefulWidget {
-  const MarketplaceScreen({super.key});
+class ProdutorMarketplaceScreen extends StatefulWidget {
+  const ProdutorMarketplaceScreen({super.key});
 
   @override
-  State<MarketplaceScreen> createState() => _MarketplaceScreenState();
+  State<ProdutorMarketplaceScreen> createState() => _MarketplaceScreenState();
 }
 
-class _MarketplaceScreenState extends State<MarketplaceScreen> {
+class _MarketplaceScreenState extends State<ProdutorMarketplaceScreen> {
   static const _tabIndex = 0;
   String _filtroCategoria = 'todos';
 
