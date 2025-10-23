@@ -32,6 +32,13 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
       ),
       body: Column(
         children: [
+          SizedBox(height: 16.0),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/beneficios');
+            },
+            child: Text('Benefícios'),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: DropdownButton<String>(
